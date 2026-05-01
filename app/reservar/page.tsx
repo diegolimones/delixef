@@ -1,7 +1,16 @@
-'use client';
-
+import type { Metadata } from 'next';
 import Container from '@/components/Container';
 import ReservationForm from '@/components/ReservationForm';
+
+export const metadata: Metadata = {
+  title: 'Reservar | Delixef - Chef Privado en Ibiza',
+  description: 'Reserva tu experiencia gastronómica con nuestro chef privado en Ibiza. Elige tu servicio, fecha y personaliza tu menú.',
+  openGraph: {
+    title: 'Reserva tu Experiencia | Delixef',
+    description: 'Crea tu reserva personalizada en Delixef',
+    type: 'website',
+  },
+};
 
 export default function Reservar() {
   return (

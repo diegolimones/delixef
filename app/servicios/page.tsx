@@ -1,9 +1,18 @@
-'use client';
-
+import type { Metadata } from 'next';
 import Container from '@/components/Container';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Servicios | Delixef - Chef Privado en Ibiza',
+  description: 'Descubre nuestros servicios: desayunos gourmet, comidas personalizadas, cenas exclusivas y catering para eventos especiales en Ibiza.',
+  openGraph: {
+    title: 'Nuestros Servicios | Delixef',
+    description: 'Desayunos, comidas, cenas y eventos con chef privado en Ibiza',
+    type: 'website',
+  },
+};
 
 const servicios = [
   {
