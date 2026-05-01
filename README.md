@@ -11,6 +11,9 @@ Plataforma web profesional para Delixef, servicio de chef privado en Ibiza. Perm
 - **Sincronización Google Calendar**: Las reservas se sincronizan automáticamente
 - **Diseño Responsivo**: Interfaz optimizada para móvil y escritorio
 - **Lujo Minimalista**: Estética elegante con calidez gastronómica
+- **SEO Optimizado**: Metadatos completos, Open Graph, JSON-LD structured data
+- **Suite de Tests**: Tests unitarios e integración con Jest y React Testing Library
+- **Autenticación Segura**: NextAuth.js con gestión de sesiones
 
 ## 🛠️ Tech Stack
 
@@ -64,6 +67,16 @@ npm run dev
 ```
 
 Abrir [http://localhost:3000](http://localhost:3000)
+
+### 6. Ejecutar tests
+```bash
+npm test
+```
+
+Para watch mode:
+```bash
+npm test -- --watch
+```
 
 ## 📁 Estructura del Proyecto
 
@@ -139,6 +152,12 @@ git remote add origin https://github.com/tuusuario/delixef.git
 git branch -M main
 git push -u origin main
 ```
+
+**Ver guía completa:** Consulta `VERCEL_DEPLOYMENT.md` para instrucciones detalladas de despliegue en Vercel, incluyendo:
+- Configuración de variables de entorno
+- Solución de problemas
+- Monitoreo y actualizaciones
+- Rollback a versiones anteriores
 
 ## 📋 Variables de Entorno Requeridas
 
