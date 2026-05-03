@@ -117,8 +117,8 @@ export default function Calendar({
         {/* Days */}
         <div className="grid grid-cols-7 gap-2">
           {days.map((day, index) => {
-            const isAvailable = isDateAvailable(day);
-            const isSelected = isDateSelected(day);
+            const isAvailable = day ? isDateAvailable(day) : false;
+            const isSelected = day ? isDateSelected(day) : false;
 
             return (
               <button
