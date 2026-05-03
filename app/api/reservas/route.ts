@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Database error:', error);
       return NextResponse.json(
-        { error: 'Error al crear la reserva' },
+        { error: 'Error al crear la reserva', details: error.message },
         { status: 500 }
       );
     }

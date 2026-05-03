@@ -114,7 +114,9 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
             specialRequests: '',
           });
         } else {
-          alert('Error al crear la reserva. Intenta de nuevo.');
+          const errorData = await response.json();
+          console.error('API Error:', errorData);
+          alert(`Error al crear la reserva: ${errorData.details || 'Error desconocido'}`);
         }
       } catch (error) {
         alert('Error de conexión. Intenta de nuevo.');
