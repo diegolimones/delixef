@@ -24,7 +24,7 @@ export default function AdminMenus() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category: 'comida' as const,
+    category: 'comida' as 'desayuno' | 'comida' | 'cena' | 'evento',
     price: '',
     ingredients: '',
     dietary_restrictions: '',
