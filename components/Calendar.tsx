@@ -66,7 +66,7 @@ export default function Calendar({
   const handleDateClick = (day: number) => {
     if (!isDateAvailable(day)) return;
     const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    const dateString = date.toISOString().split('T')[0];
+    const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     onDateSelect(dateString, selectedTimeSlot || 'comida');
   };
 
