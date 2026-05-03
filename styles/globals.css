@@ -1,36 +1,12 @@
-@import "tailwindcss";
+ @import "tailwindcss";
 
   @layer base {
-    @font-face {
-      font-family: "Playfair Display";
-      src: url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&display=swap");
-    }
-
-    @font-face {
-      font-family: "Inter";
-      src: url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      @apply font-inter bg-white text-gray-900;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      @apply font-playfair;
-    }
-  }
-
-  @layer components {
-    .btn-primary {
-      @apply bg-gold text-white px-6 py-3 rounded font-semibold hover:opacity-90 transition;
-    }
-
-    .btn-secondary {
-      @apply bg-terracotta text-white px-6 py-3 rounded font-semibold hover:opacity-90 transition;
-    }
-
-    .container-custom {
-      @apply max-w-7xl mx-auto px-4;
+      @apply antialiased;
     }
   }
 
