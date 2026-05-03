@@ -201,8 +201,9 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
               variant="primary"
               onClick={handleProceedToStep3}
               disabled={!formData.date || !formData.timeSlot}
+              className="min-w-max"
             >
-              Continuar
+              Continuar al paso 3
             </Button>
           </div>
         </div>
