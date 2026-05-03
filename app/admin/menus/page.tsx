@@ -10,11 +10,11 @@ import { supabase } from '@/lib/supabase';
 interface Menu {
   id: string;
   name: string;
-  description?: string;
+  description: string | null;
   category: 'desayuno' | 'comida' | 'cena' | 'evento';
-  price?: number;
-  ingredients?: string;
-  dietary_restrictions?: string;
+  price: number | null;
+  ingredients: string | null;
+  dietary_restrictions: string | null;
   available: boolean;
 }
 
