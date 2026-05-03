@@ -13,7 +13,7 @@ export default function AdminDashboard() {
     pendingReservations: 0,
     confirmedReservations: 0,
   });
-  const [recentReservations, setRecentReservations] = useState([]);
+  const [recentReservations, setRecentReservations] = useState<any[]>([]);
 
   useEffect(() => {
     if (isAuthenticated) {
