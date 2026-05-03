@@ -67,7 +67,7 @@ async function sendConfirmationEmail(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'reservas@delixef.com',
+        from: 'onboarding@resend.dev',
         to: clientEmail,
         subject: 'Tu reserva en Delixef ha sido recibida - Confirma aquí',
         html: emailHtml,
@@ -117,7 +117,7 @@ async function sendAdminNotification(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'notificaciones@delixef.com',
+        from: 'onboarding@resend.dev',
         to: process.env.ADMIN_EMAIL,
         subject: `Nueva reserva: ${clientName} - ${reservationDate}`,
         html: emailHtml,
