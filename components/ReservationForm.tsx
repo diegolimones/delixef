@@ -65,6 +65,8 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
   const handleProceedToStep3 = () => {
     if (formData.date && formData.timeSlot) {
       setStep(3);
+    } else {
+      alert('Por favor selecciona una fecha y una hora');
     }
   };
 
@@ -200,7 +202,6 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
             <Button
               variant="primary"
               onClick={handleProceedToStep3}
-              disabled={!formData.date || !formData.timeSlot}
               className="min-w-max"
             >
               Continuar al paso 3
