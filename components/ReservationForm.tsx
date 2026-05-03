@@ -202,7 +202,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
             <Button
               variant="primary"
               onClick={handleProceedToStep3}
-              className="min-w-max"
+              className="min-w-max bg-black hover:bg-gray-800 text-white"
             >
               Continuar al paso 3
             </Button>
