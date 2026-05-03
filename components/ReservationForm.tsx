@@ -269,7 +269,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
               <Button variant="outline" onClick={() => setStep(2)}>
                 Atrás
               </Button>
-              <Button variant="primary" onClick={handleProceedToStep4}>
+              <Button variant="primary" onClick={handleProceedToStep4} className="bg-black hover:bg-gray-800">
                 Continuar
               </Button>
             </div>
