@@ -221,3 +221,4 @@ Desarrollado para Delixef - Chef Privado en Ibiza
 
 **¿Preguntas o sugerencias?** Contacta al equipo de desarrollo.
 # Forcing redeploy
+# Redeploy trigger
