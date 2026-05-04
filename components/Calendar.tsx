@@ -86,19 +86,19 @@ export default function Calendar({
   return (
     <div className="space-y-6">
       {/* Calendar */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-sand-50 border border-sea-200/60 p-6">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={handlePreviousMonth}
-            className="p-2 hover:bg-gray-100 rounded transition"
+            className="p-2 hover:bg-sand-100 transition-colors text-ink"
             aria-label="Mes anterior"
           >
             ←
           </button>
-          <h3 className="font-semibold text-lg capitalize">{monthName}</h3>
+          <h3 className="font-display text-xl text-ink capitalize">{monthName}</h3>
           <button
             onClick={handleNextMonth}
-            className="p-2 hover:bg-gray-100 rounded transition"
+            className="p-2 hover:bg-sand-100 transition-colors text-ink"
             aria-label="Próximo mes"
           >
             →
@@ -108,7 +108,7 @@ export default function Calendar({
         {/* Weekdays */}
         <div className="grid grid-cols-7 gap-2 mb-2">
           {['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'].map((day) => (
-            <div key={day} className="text-center text-sm font-semibold text-gray-600 py-2">
+            <div key={day} className="text-center text-xs font-semibold tracking-[0.2em] uppercase text-ink-mute py-2">
               {day}
             </div>
           ))}
@@ -126,11 +126,11 @@ export default function Calendar({
                 onClick={() => day && handleDateClick(day)}
                 disabled={!isAvailable}
                 className={`
-                  p-3 rounded font-medium transition text-sm
+                  p-3 font-medium transition-colors text-sm
                   ${!day ? 'invisible' : ''}
-                  ${isSelected ? 'bg-gold text-white' : 'bg-gray-100 text-gray-900'}
-                  ${isAvailable && !isSelected ? 'hover:bg-gray-200 cursor-pointer' : ''}
-                  ${!isAvailable && day ? 'opacity-50 cursor-not-allowed' : ''}
+                  ${isSelected ? 'bg-coral-500 text-sand-50' : 'bg-sand-100 text-ink'}
+                  ${isAvailable && !isSelected ? 'hover:bg-coral-500/15 hover:text-coral-700 cursor-pointer' : ''}
+                  ${!isAvailable && day ? 'opacity-40 cursor-not-allowed' : ''}
                 `}
               >
                 {day}
@@ -142,29 +142,31 @@ export default function Calendar({
 
       {/* Time Slots */}
       {selectedDate && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h4 className="font-semibold text-lg mb-4">Selecciona una hora</h4>
+        <div className="bg-sand-50 border border-sea-200/60 p-6">
+          <h4 className="font-display text-xl text-ink mb-5">Selecciona una hora</h4>
           <div className="space-y-3">
             {timeSlots.map((slot) => (
               <button
                 key={slot.id}
                 onClick={() => onDateSelect(selectedDate, slot.id)}
                 className={`
-                  w-full p-4 rounded-lg border-2 transition text-left
+                  w-full p-4 border-2 transition-colors text-left
                   ${
                     selectedTimeSlot === slot.id
-                      ? 'border-gold bg-gold bg-opacity-10'
-                      : 'border-gray-200 hover:border-gold'
+                      ? 'border-coral-500 bg-coral-500/10'
+                      : 'border-sea-200 hover:border-coral-500/50'
                   }
                 `}
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{slot.icon}</span>
                   <div>
-                    <div className="font-semibold text-gray-900">{slot.label}</div>
+                    <div className={`font-semibold ${
+                      selectedTimeSlot === slot.id ? 'text-coral-700' : 'text-ink'
+                    }`}>{slot.label}</div>
                   </div>
                   {selectedTimeSlot === slot.id && (
-                    <span className="ml-auto">✓</span>
+                    <span className="ml-auto text-coral-600 font-bold">✓</span>
                   )}
                 </div>
               </button>
@@ -175,9 +177,9 @@ export default function Calendar({
 
       {/* Selection Summary */}
       {selectedDate && selectedTimeSlot && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-900">
-            <strong>Fecha y hora seleccionadas:</strong>
+        <div className="bg-coral-500/10 border border-coral-500/40 p-4">
+          <p className="text-sm text-coral-700">
+            <strong className="text-coral-700">Fecha y hora seleccionadas:</strong>
             {' '}
             {new Date(selectedDate).toLocaleDateString('es-ES', {
               weekday: 'long',

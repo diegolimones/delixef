@@ -133,13 +133,13 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
             <div
               className={`
                 w-10 h-10 rounded-full flex items-center justify-center font-semibold
-                ${s <= step ? 'bg-gold text-white' : 'bg-gray-200 text-gray-600'}
-                ${s < step ? 'ring-2 ring-gold' : ''}
+                ${s <= step ? 'bg-olive-800 text-cream-50' : 'bg-cream-200 text-ink-mute'}
+                ${s < step ? 'ring-2 ring-olive-800' : ''}
               `}
             >
               {s < step ? '✓' : s}
             </div>
-            <div className="text-xs mt-2 text-center text-gray-600">
+            <div className="text-xs mt-2 text-center text-ink-mute font-medium tracking-wider uppercase">
               {s === 1 && 'Servicio'}
               {s === 2 && 'Fecha'}
               {s === 3 && 'Huéspedes'}
@@ -149,7 +149,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
               <div
                 className={`
                   h-1 flex-1 mx-2 mt-4
-                  ${s < step ? 'bg-gold' : 'bg-gray-200'}
+                  ${s < step ? 'bg-olive-800' : 'bg-cream-200'}
                 `}
                 style={{ minWidth: '20px' }}
               />
@@ -161,24 +161,31 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
       {/* Step 1: Service Selection */}
       {step === 1 && (
         <div>
-          <h2 className="font-playfair text-3xl mb-6">¿Qué tipo de servicio deseas?</h2>
+          <h2 className="font-display font-light text-4xl text-ink mb-8 leading-tight">¿Qué tipo de servicio deseas?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {services.map((service) => (
               <button
                 key={service.id}
                 onClick={() => handleServiceSelect(service.id)}
                 className={`
-                  p-6 rounded-lg border-2 transition text-left
+                  p-6 border-2 transition-colors text-left group
                   ${
                     formData.serviceType === service.id
-                      ? 'border-gold bg-gold bg-opacity-10'
-                      : 'border-gray-200 hover:border-gold'
+                      ? 'border-coral-500 bg-coral-500/10'
+                      : 'border-sea-200 hover:border-coral-500/50'
                   }
                 `}
               >
-                <div className="text-4xl mb-2">{service.icon}</div>
-                <h3 className="font-semibold text-lg">{service.name}</h3>
-                <p className="text-sm text-gray-600">{service.description}</p>
+                <div className="flex items-baseline justify-between mb-3">
+                  <span className={`font-display text-2xl font-light tabular-nums ${
+                    formData.serviceType === service.id ? 'text-coral-600' : 'text-coral-500'
+                  }`}>
+                    {String(services.indexOf(service) + 1).padStart(2, '0')}
+                  </span>
+                  <span className="text-2xl">{service.icon}</span>
+                </div>
+                <h3 className="font-display text-2xl text-ink font-normal">{service.name}</h3>
+                <p className="text-sm text-ink-mute font-light mt-2">{service.description}</p>
               </button>
             ))}
           </div>
@@ -188,7 +195,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
       {/* Step 2: Date & Time Selection */}
       {step === 2 && (
         <div>
-          <h2 className="font-playfair text-3xl mb-6">Selecciona fecha y hora</h2>
+          <h2 className="font-display font-light text-4xl text-ink mb-8 leading-tight">Selecciona fecha y hora</h2>
           <Calendar
             onDateSelect={handleDateTimeSelect}
             selectedDate={formData.date}
@@ -204,7 +211,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
             <Button
               variant="primary"
               onClick={handleProceedToStep3}
-              className="min-w-max bg-black hover:bg-gray-800 text-white"
+              className="min-w-max"
             >
               Continuar al paso 3
             </Button>
@@ -215,15 +222,15 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
       {/* Step 3: Guest Count & Preferences */}
       {step === 3 && (
         <div>
-          <h2 className="font-playfair text-3xl mb-6">Detalles de tu reserva</h2>
+          <h2 className="font-display font-light text-4xl text-ink mb-8 leading-tight">Detalles de tu reserva</h2>
           <div className="space-y-6">
             {/* Guest Count */}
             <Card>
-              <h3 className="font-semibold text-lg mb-4">Número de personas</h3>
+              <h3 className="font-display text-xl text-ink mb-5">Número de personas</h3>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => handleGuestCountChange(Math.max(1, formData.numberOfPeople - 1))}
-                  className="w-10 h-10 border border-gray-300 rounded hover:bg-gray-100"
+                  className="w-10 h-10 border border-sea-200 hover:border-coral-500 hover:text-coral-600 transition-colors text-ink font-light"
                 >
                   −
                 </button>
@@ -232,7 +239,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
                 </span>
                 <button
                   onClick={() => handleGuestCountChange(formData.numberOfPeople + 1)}
-                  className="w-10 h-10 border border-gray-300 rounded hover:bg-gray-100"
+                  className="w-10 h-10 border border-sea-200 hover:border-coral-500 hover:text-coral-600 transition-colors text-ink font-light"
                 >
                   +
                 </button>
@@ -241,26 +248,26 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
 
             {/* Dietary Restrictions */}
             <Card>
-              <h3 className="font-semibold text-lg mb-4">Restricciones dietéticas</h3>
+              <h3 className="font-display text-xl text-ink mb-5">Restricciones dietéticas</h3>
               <textarea
                 name="dietaryRestrictions"
                 value={formData.dietaryRestrictions}
                 onChange={handleInputChange}
                 placeholder="Ej: Vegetariano, Sin gluten, Alergias, etc."
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                className="w-full p-3 border border-olive-200 bg-cream-50 text-ink rounded-none focus:outline-none focus:border-olive-800 transition-colors"
                 rows={3}
               />
             </Card>
 
             {/* Special Requests */}
             <Card>
-              <h3 className="font-semibold text-lg mb-4">Solicitudes especiales</h3>
+              <h3 className="font-display text-xl text-ink mb-5">Solicitudes especiales</h3>
               <textarea
                 name="specialRequests"
                 value={formData.specialRequests}
                 onChange={handleInputChange}
                 placeholder="Cuéntanos si tienes algo especial en mente..."
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                className="w-full p-3 border border-olive-200 bg-cream-50 text-ink rounded-none focus:outline-none focus:border-olive-800 transition-colors"
                 rows={3}
               />
             </Card>
@@ -269,7 +276,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
               <Button variant="outline" onClick={() => setStep(2)}>
                 Atrás
               </Button>
-              <Button variant="primary" onClick={handleProceedToStep4} className="bg-black hover:bg-gray-800">
+              <Button variant="primary" onClick={handleProceedToStep4}>
                 Continuar
               </Button>
             </div>
@@ -280,7 +287,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
       {/* Step 4: Contact Information */}
       {step === 4 && (
         <form onSubmit={handleSubmit}>
-          <h2 className="font-playfair text-3xl mb-6">Confirma tus datos</h2>
+          <h2 className="font-display font-light text-4xl text-ink mb-8 leading-tight">Confirma tus datos</h2>
           <div className="space-y-4">
             <input
               type="text"
@@ -289,7 +296,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
               onChange={handleInputChange}
               placeholder="Nombre completo"
               required
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+              className="w-full p-3 border border-olive-200 bg-cream-50 text-ink rounded-none focus:outline-none focus:border-olive-800 transition-colors"
             />
             <input
               type="email"
@@ -298,7 +305,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
               onChange={handleInputChange}
               placeholder="Correo electrónico"
               required
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+              className="w-full p-3 border border-olive-200 bg-cream-50 text-ink rounded-none focus:outline-none focus:border-olive-800 transition-colors"
             />
             <input
               type="tel"
@@ -307,12 +314,12 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
               onChange={handleInputChange}
               placeholder="Teléfono"
               required
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+              className="w-full p-3 border border-olive-200 bg-cream-50 text-ink rounded-none focus:outline-none focus:border-olive-800 transition-colors"
             />
 
             {/* Summary */}
-            <Card className="bg-blue-50 border-blue-200">
-              <h3 className="font-semibold mb-3">Resumen de tu reserva:</h3>
+            <Card className="bg-coral-500/5 border-coral-500/30">
+              <h3 className="font-display text-xl text-coral-700 mb-4">Resumen de tu reserva</h3>
               <ul className="space-y-2 text-sm">
                 <li>
                   <strong>Servicio:</strong>{' '}

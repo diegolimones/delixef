@@ -1,12 +1,26 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { Fraunces, Manrope } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import '@/styles/globals.css';
 
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+  axes: ['SOFT', 'WONK', 'opsz'],
+});
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
-  title: 'Delixef - Chef Privado en Ibiza | Experiencias Gastronómicas Exclusivas',
-  description: 'Delixef ofrece servicios de chef privado en Ibiza. Menús personalizados, desayunos, comidas, cenas y eventos especiales con experiencia gastronómica de lujo.',
+  title: 'Delixef — Chef Privado en Ibiza | Experiencias Gastronómicas',
+  description: 'Chef privado en Ibiza. Menús personalizados, desayunos, comidas, cenas y eventos diseñados con producto local y técnica de alta cocina.',
   keywords: 'chef privado Ibiza, catering privado, menú personalizado, desayuno, comida, cena, eventos gastronómicos, chef personal',
   authors: [{ name: 'Delixef' }],
   creator: 'Delixef',
@@ -18,17 +32,17 @@ export const metadata: Metadata = {
   viewport: 'width=device-width, initial-scale=1.0',
   robots: 'index, follow',
   openGraph: {
-    title: 'Delixef - Chef Privado en Ibiza',
-    description: 'Experimenta lujo minimalista con warmth gourmet. Menús personalizados diseñados para cada ocasión.',
+    title: 'Delixef — Chef Privado en Ibiza',
+    description: 'Cocina mediterránea editorial. Menús diseñados a medida para tu casa, villa o evento en Ibiza.',
     type: 'website',
     locale: 'es_ES',
     url: 'https://delixef.com',
-    siteName: 'Delixef - Chef Privado en Ibiza',
+    siteName: 'Delixef',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Delixef - Chef Privado en Ibiza',
-    description: 'Experiencias gastronómicas exclusivas con nuestro chef privado',
+    title: 'Delixef — Chef Privado en Ibiza',
+    description: 'Cocina mediterránea editorial diseñada a medida.',
   },
   alternates: {
     canonical: 'https://delixef.com',
@@ -62,7 +76,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="es">
+    <html lang="es" className={`${fraunces.variable} ${manrope.variable}`}>
       <head>
         <Script
           id="organization-schema"
@@ -71,9 +85,9 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className="font-inter flex flex-col min-h-screen">
+      <body className="font-body bg-sand-50 text-ink flex flex-col min-h-screen antialiased">
         <Header />
-        <main className="flex-1">
+        <main className="flex-1 pt-20 md:pt-24">
           {children}
         </main>
         <Footer />

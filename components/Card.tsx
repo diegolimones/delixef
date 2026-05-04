@@ -7,16 +7,15 @@ interface CardProps {
 }
 
 export default function Card({ children, className = '', hover = true }: CardProps) {
-  const hoverClass = hover ? 'hover:shadow-lg hover:border-gold' : '';
+  const hoverClass = hover ? 'hover:border-olive-400' : '';
 
   return (
     <div
       className={`
-        p-6
-        border border-gray-200
-        rounded-lg
-        bg-white
-        transition-all
+        p-7
+        border border-olive-200/60
+        bg-cream-50
+        transition-colors
         duration-200
         ${hoverClass}
         ${className}

@@ -1,12 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const rawAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const rawServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables are not configured');
+const isValidUrl = /^https?:\/\/.+/i.test(rawUrl);
+
+if (!isValidUrl || !rawAnonKey) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    '[supabase] Missing or invalid env vars (NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY). Falling back to a dummy client. DB calls will fail silently.'
+  );
 }
+
+const supabaseUrl = isValidUrl ? rawUrl : 'https://placeholder.supabase.co';
+const supabaseAnonKey = rawAnonKey || 'placeholder-anon-key';
+const supabaseServiceKey = rawServiceKey || 'placeholder-service-key';
 
 // Client for browser-side operations
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -18,6 +27,8 @@ export const supabaseServer = createClient(supabaseUrl, supabaseServiceKey, {
     persistSession: false,
   },
 });
+
+export const isSupabaseConfigured = isValidUrl && !!rawAnonKey;
 
 // Types for database
 export interface Reserva {
