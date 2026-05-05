@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import { services } from '@/lib/services';
 
 export const metadata: Metadata = {
   title: 'Delixef — Private Chef Ibiza · Cocina Mediterránea Privada',
@@ -12,40 +13,14 @@ export const metadata: Metadata = {
   },
 };
 
-const servicios = [
-  {
-    num: '01',
-    name: 'Cenas en villa',
-    subtitle: 'Bajo las estrellas',
-    description:
-      'Una cena privada con narrativa: cuatro o seis pases, vinos elegidos y servicio en mesa. Una sola mesa por noche, atención sin reparto.',
-    desde: '80€',
-  },
-  {
-    num: '02',
-    name: 'Eventos privados',
-    subtitle: 'Una ocasión especial',
-    description:
-      'Cumpleaños, retiros corporativos, presentaciones y celebraciones íntimas en villa. Servicio completo de cocina, barra y sala adaptado al espacio y al número.',
-    desde: 'Consulta',
-  },
-  {
-    num: '03',
-    name: 'Bodas',
-    subtitle: 'Frente al mar',
-    description:
-      'Diseñamos la experiencia gastronómica completa de tu boda en villa, finca o cala. De 50 a 200 invitados, cocina mediterránea, barras y arroces a la vista.',
-    desde: '120€',
-  },
-  {
-    num: '04',
-    name: 'Arroces & barras',
-    subtitle: 'Sello de la casa',
-    description:
-      'Arroces y paellas mediterráneas a la vista del invitado. Barras de cócteles con coctelería de autor para complementar el evento o como servicio independiente.',
-    desde: 'Consulta',
-  },
-];
+const servicios = services.map((s) => ({
+  num: s.num,
+  name: s.name,
+  subtitle: s.subtitle,
+  description: s.shortDescription,
+  desde: s.precio,
+  id: s.id,
+}));
 
 const principios = [
   {
@@ -344,7 +319,7 @@ export default function Home() {
             </div>
             <div className="col-span-12 md:col-span-9">
               <h2 className="font-display font-light text-display-lg leading-[0.96]">
-                Cuatro formatos.
+                Siete formatos.
                 <br />
                 <span className="italic text-coral-400">Una misma idea</span> de mesa.
               </h2>
@@ -356,7 +331,7 @@ export default function Home() {
             {servicios.map((s) => (
               <li key={s.num}>
                 <Link
-                  href={`/servicios#${s.name.toLowerCase()}`}
+                  href={`/servicios#${s.id}`}
                   className="group grid grid-cols-12 gap-4 md:gap-6 py-8 md:py-10 items-baseline hover:bg-sand-50/[0.04] transition-colors duration-300 -mx-4 px-4 md:-mx-6 md:px-6"
                 >
                   <span className="col-span-2 md:col-span-1 font-display text-2xl md:text-3xl text-coral-400 font-light">
@@ -560,10 +535,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIOS — editorial quotes */}
-      <section className="bg-sand-100 border-t border-sea-200/40 py-24 md:py-36">
-        <div className="max-w-editorial mx-auto px-6 md:px-10">
-          <div className="grid grid-cols-12 gap-y-12 gap-x-8 mb-16 md:mb-20">
+      {/* TESTIMONIOS — editorial stacked */}
+      <section className="bg-sand-100 border-t border-sea-200/40 py-24 md:py-36 relative overflow-hidden">
+        {/* Subtle decorative italic */}
+        <div
+          aria-hidden="true"
+          className="hidden lg:block absolute top-12 right-8 font-display font-light italic text-[14rem] leading-none text-coral-400/[0.06] select-none pointer-events-none"
+        >
+          voces
+        </div>
+
+        <div className="relative max-w-editorial mx-auto px-6 md:px-10">
+          {/* Header */}
+          <div className="grid grid-cols-12 gap-y-8 gap-x-8 mb-20 md:mb-28">
             <div className="col-span-12 md:col-span-3">
               <span className="eyebrow text-coral-600">— Voces</span>
             </div>
@@ -573,35 +557,55 @@ export default function Home() {
                 <br />
                 <span className="italic text-sea-600">de la mesa</span>.
               </h2>
+              <p className="mt-6 max-w-md text-ink-soft font-light leading-relaxed">
+                Tres mesas, tres formatos distintos. Un mismo recuerdo: que el equipo entró, cocinó y se fue sin que nada importara más que la conversación.
+              </p>
             </div>
           </div>
 
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-y-12 md:gap-x-10">
-            {testimonios.map((t, i) => (
-              <li
-                key={i}
-                className={`relative ${
-                  i > 0 ? 'md:pl-10 md:border-l border-sea-200/60' : ''
-                }`}
-              >
-                {/* Decorative open quote */}
-                <span
-                  aria-hidden="true"
-                  className="absolute -top-6 md:-top-8 left-0 font-display font-light text-7xl md:text-8xl text-coral-400 leading-none select-none"
+          {/* Stacked editorial testimonials */}
+          <ul className="space-y-20 md:space-y-28">
+            {testimonios.map((t, i) => {
+              const reversed = i % 2 === 1;
+              return (
+                <li
+                  key={i}
+                  className="grid grid-cols-12 gap-y-8 gap-x-8 items-start"
                 >
-                  «
-                </span>
+                  {/* Number column */}
+                  <div
+                    className={`col-span-12 md:col-span-2 ${
+                      reversed ? 'md:order-2 md:text-right' : ''
+                    }`}
+                  >
+                    <span className="font-display text-5xl md:text-6xl text-coral-500 font-light tabular-nums leading-none">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <div className="mt-3 wave-line text-coral-400 max-w-[3rem]"></div>
+                  </div>
 
-                <p className="font-display text-xl md:text-2xl text-ink font-light leading-snug pt-8 md:pt-10">
-                  {t.quote}
-                </p>
+                  {/* Quote + author */}
+                  <div
+                    className={`col-span-12 md:col-span-9 ${
+                      reversed ? 'md:order-1 md:col-start-2' : 'md:col-start-4'
+                    }`}
+                  >
+                    <p className="font-display text-2xl md:text-4xl lg:text-[2.75rem] text-ink font-light leading-[1.15]">
+                      <span className="italic text-coral-500">«</span>
+                      {t.quote}
+                      <span className="italic text-coral-500">»</span>
+                    </p>
 
-                <div className="mt-8 pt-6 border-t border-sea-200/60">
-                  <div className="font-display text-lg text-ink italic">{t.author}</div>
-                  <div className="eyebrow text-ink-mute mt-2">{t.context}</div>
-                </div>
-              </li>
-            ))}
+                    <div className="mt-10 pt-6 border-t border-sea-200/60 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3">
+                      <div className="font-display text-xl md:text-2xl text-ink italic">
+                        {t.author}
+                      </div>
+                      <div className="eyebrow text-ink-mute">{t.context}</div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </section>

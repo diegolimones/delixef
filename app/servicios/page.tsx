@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import { services as servicios } from '@/lib/services';
 
 export const metadata: Metadata = {
   title: 'Servicios | Delixef — Chef Privado en Ibiza',
@@ -15,81 +16,6 @@ export const metadata: Metadata = {
 const heroImage =
   'https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=85&auto=format&fit=crop';
 
-const servicios = [
-  {
-    id: 'cenas',
-    num: '01',
-    name: 'Cenas en villa',
-    subtitle: 'Bajo las estrellas',
-    image:
-      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=85&auto=format&fit=crop',
-    description:
-      'Una cena privada con narrativa. Cuatro o seis pases, vinos elegidos, servicio en mesa. Una sola mesa por noche, atención sin reparto.',
-    details: [
-      'Menú degustación de cuatro o seis pases',
-      'Maridaje cuidado, vinos seleccionados',
-      'Iluminación y montaje de mesa incluidos',
-      'Sobremesa con petit fours y digestivos',
-      'Equipo discreto, te ocupas solo de tus invitados',
-    ],
-    precio: '80€',
-  },
-  {
-    id: 'eventos',
-    num: '02',
-    name: 'Eventos privados',
-    subtitle: 'Una ocasión especial',
-    image:
-      'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=1200&q=85&auto=format&fit=crop',
-    description:
-      'Cumpleaños, retiros corporativos, presentaciones de marca y celebraciones íntimas. Servicio adaptado al espacio y al número, desde una mesa hasta cien comensales.',
-    details: [
-      'Diseño integral del menú y la experiencia',
-      'Servicio de cocina, barra y sala',
-      'Estaciones gastronómicas y showcooking',
-      'Branding y atrezzo del evento si aplica',
-      'Coordinación con espacio y proveedores',
-    ],
-    precio: 'Consulta',
-  },
-  {
-    id: 'bodas',
-    num: '03',
-    name: 'Bodas',
-    subtitle: 'Frente al mar',
-    image:
-      'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&q=85&auto=format&fit=crop',
-    description:
-      'Diseñamos la experiencia gastronómica completa de tu boda en Ibiza. Cocina mediterránea, servicio en mesa, barras de cócteles y arroces a la vista. De 50 a 200 invitados, en villa, finca o cala.',
-    details: [
-      'Menú degustación o servicio en mesa',
-      'Cocktail de bienvenida con barra premium',
-      'Arroces y paellas a la vista del invitado',
-      'Equipo completo: cocina, barra, sala y producción',
-      'Coordinación con wedding planner y espacio',
-      'Catas previas y reuniones de planificación',
-    ],
-    precio: '120€',
-  },
-  {
-    id: 'arroces-barras',
-    num: '04',
-    name: 'Arroces & barras',
-    subtitle: 'Sello de la casa',
-    image:
-      'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=1200&q=85&auto=format&fit=crop',
-    description:
-      'Sello distintivo de DeliXef. Arroces y paellas mediterráneas a la vista del invitado y barras de coctelería de autor. Como complemento de un evento o como servicio independiente.',
-    details: [
-      'Paellas y arroces caldosos cocinados en directo',
-      'Barra de coctelería con bartenders',
-      'Selección de vinos, cervezas artesanas y sin alcohol',
-      'Catering modular para grupos grandes',
-      'Posibilidad de contratar como servicio aislado',
-    ],
-    precio: 'Consulta',
-  },
-];
 
 const proceso = [
   {
@@ -186,7 +112,7 @@ export default function Servicios() {
               <div className="flex items-center justify-between fade-up fade-up-1">
                 <span className="eyebrow text-sand-50/95">N°02 · Servicios</span>
                 <span className="eyebrow text-sand-50/85 hidden md:inline tabular-nums">
-                  04 formatos
+                  07 formatos
                 </span>
               </div>
             </div>

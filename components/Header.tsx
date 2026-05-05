@@ -9,6 +9,9 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
+  // Hide on admin pages
+  if (pathname?.startsWith('/admin')) return null;
+
   // Home has dark cinematic hero — header should be transparent with light text initially
   const onDarkHero = pathname === '/' && !scrolled;
 

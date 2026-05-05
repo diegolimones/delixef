@@ -1,9 +1,6 @@
 'use client';
 
 import { useAdminAuth } from '@/lib/hooks';
-import Container from '@/components/Container';
-import Card from '@/components/Card';
-import Button from '@/components/Button';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
@@ -17,6 +14,13 @@ interface Menu {
   dietary_restrictions: string | null;
   available: boolean;
 }
+
+const categoryLabels: Record<string, string> = {
+  desayuno: 'Desayuno',
+  comida: 'Comida',
+  cena: 'Cena',
+  evento: 'Evento',
+};
 
 export default function AdminMenus() {
   const { isAuthenticated, isLoading } = useAdminAuth();
@@ -59,10 +63,7 @@ export default function AdminMenus() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,12 +90,7 @@ export default function AdminMenus() {
         await supabase.from('menus').update(menuData).eq('id', isEditing);
         setMenus(menus.map((m) => (m.id === isEditing ? { ...m, ...menuData } : m)));
       } else {
-        const { data } = await supabase
-          .from('menus')
-          .insert([menuData])
-          .select()
-          .single();
-
+        const { data } = await supabase.from('menus').insert([menuData]).select().single();
         if (data) {
           setMenus([...menus, data]);
         }
@@ -128,9 +124,11 @@ export default function AdminMenus() {
       dietary_restrictions: menu.dietary_restrictions || '',
     });
     setIsEditing(menu.id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id: string) => {
+    if (!confirm('¿Eliminar este menú?')) return;
     try {
       await supabase.from('menus').delete().eq('id', id);
       setMenus(menus.filter((m) => m.id !== id));
@@ -142,7 +140,6 @@ export default function AdminMenus() {
   const handleToggleAvailable = async (id: string, available: boolean) => {
     try {
       await supabase.from('menus').update({ available: !available }).eq('id', id);
-
       setMenus(menus.map((m) => (m.id === id ? { ...m, available: !available } : m)));
     } catch (error) {
       console.error('Error updating menu:', error);
@@ -150,12 +147,14 @@ export default function AdminMenus() {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Cargando...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-sand-50">
+        <div className="font-display text-xl text-ink-mute font-light">Cargando…</div>
+      </div>
+    );
   }
 
-  if (!isAuthenticated) {
-    return null;
-  }
+  if (!isAuthenticated) return null;
 
   const categories = [
     { id: 'desayuno', label: 'Desayuno' },
@@ -164,51 +163,61 @@ export default function AdminMenus() {
     { id: 'evento', label: 'Evento' },
   ];
 
+  const inputClass =
+    'w-full px-0 py-3 border-0 border-b border-sea-200 bg-transparent text-ink placeholder:text-ink-mute focus:outline-none focus:border-ink transition-colors font-light';
+
   return (
-    <div className="p-4 md:p-8">
-      <Container>
+    <div className="min-h-screen bg-sand-50">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-16">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="font-playfair text-4xl font-bold mb-2">Gestión de Menús</h1>
-          <p className="text-gray-600">Crea y gestiona los menús disponibles</p>
+        <div className="mb-12 pb-6 border-b border-sea-200/60">
+          <span className="eyebrow text-coral-600">— N°04 · Menús</span>
+          <h1 className="font-display font-light text-display-md text-ink leading-tight mt-3">
+            Gestión de <span className="italic text-sea-600">menús</span>.
+          </h1>
+          <p className="mt-3 text-ink-mute font-light">
+            Crea y administra el catálogo de platos
+          </p>
         </div>
 
-        {/* Formulario */}
-        <Card className="mb-8">
-          <h2 className="text-2xl font-semibold mb-6">
-            {isEditing ? 'Editar Menú' : 'Crear Nuevo Menú'}
+        {/* Form */}
+        <div className="mb-16">
+          <span className="eyebrow text-coral-600 block mb-4">
+            — {isEditing ? 'Editar' : 'Añadir'}
+          </span>
+          <h2 className="font-display text-2xl md:text-3xl font-light text-ink mb-8">
+            {isEditing ? 'Editar menú' : 'Nuevo menú'}
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+
+          <form onSubmit={handleSubmit} className="space-y-8 max-w-3xl">
             {submitError && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
-                {submitError}
+              <div className="border border-coral-500/50 bg-coral-500/10 px-4 py-3">
+                <p className="text-sm text-coral-600 font-light">{submitError}</p>
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Nombre del Menú *
+                <label className="eyebrow text-ink-mute block mb-2">
+                  Nombre del menú <span className="text-coral-600">*</span>
                 </label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="Ej: Desayuno Continental"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                  placeholder="Ej: Arroz marinero"
+                  className={inputClass}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Categoría
-                </label>
+                <label className="eyebrow text-ink-mute block mb-2">Categoría</label>
                 <select
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                  className={inputClass}
                 >
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
@@ -219,9 +228,7 @@ export default function AdminMenus() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Precio (€)
-                </label>
+                <label className="eyebrow text-ink-mute block mb-2">Precio (€)</label>
                 <input
                   type="number"
                   name="price"
@@ -229,134 +236,157 @@ export default function AdminMenus() {
                   onChange={handleInputChange}
                   placeholder="45.00"
                   step="0.01"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                  className={inputClass}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Descripción
-              </label>
+              <label className="eyebrow text-ink-mute block mb-2">Descripción</label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                placeholder="Describe el menú..."
-                rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                placeholder="Describe brevemente el plato..."
+                rows={2}
+                className={inputClass}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Ingredientes
-              </label>
+              <label className="eyebrow text-ink-mute block mb-2">Ingredientes</label>
               <textarea
                 name="ingredients"
                 value={formData.ingredients}
                 onChange={handleInputChange}
-                placeholder="Lista de ingredientes..."
+                placeholder="Arroz bomba, sepia, gambas, almejas..."
                 rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                className={inputClass}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Restricciones Dietéticas
+              <label className="eyebrow text-ink-mute block mb-2">
+                Restricciones dietéticas
               </label>
               <textarea
                 name="dietary_restrictions"
                 value={formData.dietary_restrictions}
                 onChange={handleInputChange}
-                placeholder="Ej: Sin gluten, Vegetariano, etc."
+                placeholder="Sin gluten, opción vegetariana, etc."
                 rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
+                className={inputClass}
               />
             </div>
 
-            <div className="flex gap-3">
-              <Button type="submit" variant="primary" size="md">
-                {isEditing ? 'Actualizar Menú' : 'Crear Menú'}
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center bg-ink text-sand-50 px-8 py-4 text-xs font-semibold tracking-[0.22em] uppercase hover:bg-coral-600 transition-colors"
+              >
+                {isEditing ? 'Actualizar menú' : 'Crear menú'}
+              </button>
               {isEditing && (
-                <Button
+                <button
                   type="button"
-                  variant="outline"
-                  size="md"
                   onClick={resetForm}
+                  className="inline-flex items-center justify-center px-6 py-4 text-xs font-semibold tracking-[0.22em] uppercase text-ink hover:text-coral-600 transition-colors border border-ink"
                 >
                   Cancelar
-                </Button>
+                </button>
               )}
             </div>
           </form>
-        </Card>
+        </div>
 
-        {/* Lista de Menús */}
-        {isLoadingData ? (
-          <div className="text-center py-8">Cargando...</div>
-        ) : menus.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {menus.map((menu) => (
-              <Card key={menu.id} className="flex flex-col">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="font-semibold text-lg text-gray-900">{menu.name}</h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {categories.find((c) => c.id === menu.category)?.label}
-                    </p>
+        {/* Listing */}
+        <div>
+          <span className="eyebrow text-coral-600 block mb-4">— Catálogo</span>
+          <h2 className="font-display text-2xl md:text-3xl font-light text-ink mb-8">
+            Menús ({menus.length})
+          </h2>
+
+          {isLoadingData ? (
+            <div className="py-20 text-center text-ink-mute font-light">Cargando…</div>
+          ) : menus.length > 0 ? (
+            <ul className="divide-y divide-sea-200/60 border-t border-b border-sea-200/60">
+              {menus.map((menu) => (
+                <li
+                  key={menu.id}
+                  className="grid grid-cols-12 gap-4 py-6 items-baseline hover:bg-sand-100 transition-colors -mx-6 px-6"
+                >
+                  <div className="col-span-12 md:col-span-2">
+                    <span className="eyebrow text-coral-600">
+                      {categoryLabels[menu.category]}
+                    </span>
                   </div>
-                  {menu.price && (
-                    <span className="text-lg font-bold text-gold">€{menu.price.toFixed(2)}</span>
-                  )}
-                </div>
 
-                {menu.description && (
-                  <p className="text-gray-600 text-sm mb-3">{menu.description}</p>
-                )}
-
-                {menu.ingredients && (
-                  <div className="mb-3 pb-3 border-b border-gray-200">
-                    <p className="text-xs text-gray-600 font-semibold">Ingredientes</p>
-                    <p className="text-sm text-gray-700">{menu.ingredients}</p>
+                  <div className="col-span-12 md:col-span-5">
+                    <h3 className="font-display text-xl text-ink font-light">{menu.name}</h3>
+                    {menu.description && (
+                      <p className="text-sm text-ink-soft font-light mt-2">
+                        {menu.description}
+                      </p>
+                    )}
+                    {menu.ingredients && (
+                      <p className="text-xs text-ink-mute italic font-light mt-2">
+                        {menu.ingredients}
+                      </p>
+                    )}
                   </div>
-                )}
 
-                <div className="flex gap-2 mt-auto pt-4">
-                  <button
-                    onClick={() => handleToggleAvailable(menu.id, menu.available)}
-                    className={`px-3 py-1 rounded text-xs font-semibold ${
-                      menu.available
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {menu.available ? 'Disponible' : 'No disponible'}
-                  </button>
-                  <button
-                    onClick={() => handleEdit(menu)}
-                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded text-xs font-semibold hover:bg-blue-200"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(menu.id)}
-                    className="px-3 py-1 bg-red-100 text-red-800 rounded text-xs font-semibold hover:bg-red-200"
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <Card className="text-center py-12">
-            <p className="text-gray-600 text-lg">No hay menús creados</p>
-          </Card>
-        )}
-      </Container>
+                  <div className="col-span-6 md:col-span-2">
+                    {menu.price && (
+                      <span className="font-display text-2xl text-ink font-light tabular-nums">
+                        {menu.price.toFixed(0)}€
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="col-span-6 md:col-span-3 flex flex-col sm:flex-row gap-3 sm:items-baseline sm:justify-end text-xs font-semibold tracking-[0.18em] uppercase">
+                    <button
+                      onClick={() => handleToggleAvailable(menu.id, menu.available)}
+                      className={`inline-flex items-center gap-2 transition-colors ${
+                        menu.available
+                          ? 'text-sea-800 hover:text-coral-600'
+                          : 'text-ink-mute hover:text-ink'
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          menu.available ? 'bg-sea-800' : 'bg-ink-mute'
+                        }`}
+                      ></span>
+                      {menu.available ? 'On' : 'Off'}
+                    </button>
+                    <button
+                      onClick={() => handleEdit(menu)}
+                      className="text-ink hover:text-coral-600 transition-colors"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDelete(menu.id)}
+                      className="text-coral-600 hover:text-coral-700 transition-colors"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="border-y border-sea-200/60 py-20 text-center">
+              <p className="font-display text-2xl text-ink-soft font-light">
+                Aún no has creado menús.
+              </p>
+              <p className="mt-3 text-ink-mute font-light max-w-md mx-auto">
+                Usa el formulario de arriba para añadir tu primer menú al catálogo.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

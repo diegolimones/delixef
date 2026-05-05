@@ -3,6 +3,8 @@ import Script from 'next/script';
 import { Fraunces, Manrope } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import MainPadding from '@/components/MainPadding';
+import Analytics from '@/components/Analytics';
 import '@/styles/globals.css';
 
 const fraunces = Fraunces({
@@ -86,10 +88,9 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body bg-sand-50 text-ink flex flex-col min-h-screen antialiased">
+        <Analytics />
         <Header />
-        <main className="flex-1 pt-20 md:pt-24">
-          {children}
-        </main>
+        <MainPadding>{children}</MainPadding>
         <Footer />
       </body>
     </html>

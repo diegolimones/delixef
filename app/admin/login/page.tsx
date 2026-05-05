@@ -1,13 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
-import Container from '@/components/Container';
-import Button from '@/components/Button';
-import Card from '@/components/Card';
+import Link from 'next/link';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -47,28 +43,46 @@ export default function AdminLogin() {
     }
   };
 
+  const inputClass =
+    'w-full px-0 py-3 border-0 border-b border-sand-50/30 bg-transparent text-sand-50 placeholder:text-sand-50/40 focus:outline-none focus:border-coral-400 transition-colors font-light disabled:opacity-50';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center py-12 px-4">
-      <Container className="max-w-md w-full">
-        <Card className="bg-white">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="font-playfair text-3xl font-bold text-gold mb-2">Delixef</h1>
-            <p className="text-gray-600">Panel de Administración</p>
+    <div className="min-h-screen bg-tide flex items-center justify-center px-6 py-12 relative overflow-hidden">
+      {/* Decorative italic */}
+      <div
+        aria-hidden="true"
+        className="hidden md:block absolute -top-12 -right-12 font-display font-light italic text-[16rem] leading-none text-coral-400/[0.06] select-none pointer-events-none"
+      >
+        admin
+      </div>
+
+      <div className="relative w-full max-w-md">
+        {/* Brand */}
+        <Link href="/" className="block mb-12 text-center">
+          <span className="font-display text-4xl font-light tracking-tightest text-sand-50 leading-none">
+            Delixef
+          </span>
+          <div className="eyebrow text-coral-400 mt-3">— Panel admin</div>
+        </Link>
+
+        <div className="border border-sand-50/20 bg-sand-50/[0.04] backdrop-blur-sm p-8 md:p-10">
+          <div className="mb-8">
+            <span className="eyebrow text-coral-400 block mb-3">— Acceso</span>
+            <h1 className="font-display font-light text-3xl text-sand-50 leading-tight">
+              Inicia <span className="italic text-coral-400">sesión</span>.
+            </h1>
           </div>
 
-          {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800 text-sm">{error}</p>
+            <div className="mb-6 border border-coral-500/50 bg-coral-500/10 px-4 py-3">
+              <p className="text-sm text-coral-400 font-light">{error}</p>
             </div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-7">
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                Correo Electrónico
+              <label htmlFor="email" className="eyebrow text-sand-50/70 block mb-2">
+                Correo
               </label>
               <input
                 id="email"
@@ -78,12 +92,13 @@ export default function AdminLogin() {
                 placeholder="admin@delixef.com"
                 required
                 disabled={isLoading}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold disabled:opacity-50"
+                className={inputClass}
+                autoComplete="email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="password" className="eyebrow text-sand-50/70 block mb-2">
                 Contraseña
               </label>
               <input
@@ -94,36 +109,31 @@ export default function AdminLogin() {
                 placeholder="••••••••"
                 required
                 disabled={isLoading}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold disabled:opacity-50"
+                className={inputClass}
+                autoComplete="current-password"
               />
             </div>
 
-            <Button
+            <button
               type="submit"
-              variant="primary"
-              size="md"
               disabled={isLoading}
-              className="w-full mt-6"
+              className="w-full inline-flex items-center justify-center bg-coral-500 text-sand-50 px-6 py-4 text-xs font-semibold tracking-[0.22em] uppercase hover:bg-coral-600 transition-colors disabled:opacity-60 mt-4"
             >
-              {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-            </Button>
+              {isLoading ? 'Iniciando sesión…' : 'Iniciar sesión'}
+            </button>
           </form>
+        </div>
 
-          {/* Demo Credentials */}
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-900 font-semibold mb-2">Credenciales de Demostración:</p>
-            <p className="text-sm text-blue-800">
-              <strong>Email:</strong> admin@delixef.com
-            </p>
-            <p className="text-sm text-blue-800">
-              <strong>Contraseña:</strong> admin123
-            </p>
-            <p className="text-xs text-blue-700 mt-2">
-              (Cambiar credenciales en producción)
-            </p>
-          </div>
-        </Card>
-      </Container>
+        {/* Back to public */}
+        <div className="mt-8 text-center">
+          <Link
+            href="/"
+            className="eyebrow text-sand-50/60 hover:text-coral-400 transition-colors"
+          >
+            ← Volver a la web
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

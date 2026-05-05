@@ -39,7 +39,8 @@ export const authOptions: NextAuthOptions = {
             name: adminUser.full_name,
           };
         } catch (error) {
-          throw new Error('Error al autenticar');
+          const msg = error instanceof Error ? error.message : 'Error al autenticar';
+          throw new Error(msg);
         }
       },
     }),

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { trackContact } from '@/lib/analytics';
 
 const heroImage =
   'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1600&q=85&auto=format&fit=crop';
@@ -37,6 +38,7 @@ export default function Contacto() {
       });
 
       if (response.ok) {
+        trackContact(formData.subject);
         setSubmitStatus('success');
         setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       } else {

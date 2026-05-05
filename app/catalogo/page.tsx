@@ -36,6 +36,7 @@ export default function Catalogo() {
     'todas' | 'desayuno' | 'comida' | 'cena' | 'evento'
   >('todas');
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const categories = [
     { id: 'todas', label: 'Todos' },
@@ -51,17 +52,24 @@ export default function Catalogo() {
 
   const fetchMenus = async () => {
     setIsLoading(true);
+    setError(null);
     try {
-      const { data } = await supabase
+      const { data, error: sbError } = await supabase
         .from('menus')
         .select('*')
         .eq('available', true)
         .order('category', { ascending: true });
 
-      setMenus(data || []);
-      setFilteredMenus(data || []);
-    } catch (error) {
-      console.error('Error fetching menus:', error);
+      if (sbError) {
+        console.error('Supabase error:', sbError);
+        setError(sbError.message);
+      } else {
+        setMenus(data || []);
+        setFilteredMenus(data || []);
+      }
+    } catch (err) {
+      console.error('Error fetching menus:', err);
+      setError('Error de conexión con la base de datos');
     } finally {
       setIsLoading(false);
     }
@@ -185,6 +193,11 @@ export default function Catalogo() {
 
           {isLoading ? (
             <div className="py-20 text-center text-ink-mute font-light">Cargando menús…</div>
+          ) : error ? (
+            <div className="py-20 text-center">
+              <p className="font-display text-xl text-coral-600 font-light">Error al cargar los menús</p>
+              <p className="mt-2 text-sm text-ink-mute font-mono">{error}</p>
+            </div>
           ) : filteredMenus.length > 0 ? (
             <ul className="divide-y divide-sea-200/60 border-t border-b border-sea-200/60">
               {filteredMenus.map((menu) => (
