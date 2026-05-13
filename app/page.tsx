@@ -38,38 +38,137 @@ const testimonios: TestimonialItem[] = [
 export default function HomePage() {
   return (
     <>
-      {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=90&auto=format&fit=crop"
-          alt="Mesa al atardecer en Ibiza"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/40 to-ink/70" />
-        <div className="absolute inset-0 bg-amber-900/20" />
+      {/* HERO — cinematográfico full-bleed */}
+      <section className="relative bg-sand-50 -mt-20 md:-mt-24">
+        <div className="relative h-[100vh] min-h-[680px] max-h-[1000px] overflow-hidden">
+          {/* Imagen con animación breathing */}
+          <div className="absolute inset-0 hero-breathe">
+            <Image
+              src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=85&auto=format&fit=crop"
+              alt="Cala mediterránea con aguas turquesas en Ibiza"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
 
-        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-          <h1 className="font-display font-light text-5xl md:text-7xl text-sand-50 leading-[1.05] mb-6">
-            Tu chef privado<br />
-            <span className="italic text-gold-300">en Ibiza</span>
-          </h1>
-          <p className="text-sand-100/80 text-lg md:text-xl font-light leading-relaxed mb-10 max-w-xl mx-auto">
-            Experiencias gastronómicas únicas para momentos que no se olvidan
-          </p>
-          <Link
-            href="/reservar"
-            className="inline-block bg-amber-500 hover:bg-amber-400 text-white px-10 py-4 rounded-full text-sm tracking-widest uppercase transition-all duration-300 hover:scale-105 hover:shadow-xl"
-          >
-            Reservar mi experiencia →
-          </Link>
+          {/* Overlay gradiente */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, oklch(0.13 0.05 232 / 0.45) 0%, oklch(0.13 0.05 232 / 0.10) 35%, oklch(0.13 0.05 232 / 0.30) 75%, oklch(0.13 0.05 232 / 0.70) 100%)',
+            }}
+          />
+
+          {/* Olas animadas SVG */}
+          <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 h-32 md:h-44 overflow-hidden pointer-events-none">
+            <svg className="absolute bottom-0 left-0 wave-animate-slow text-sand-50/20" style={{ width: '200%', height: '100%' }} viewBox="0 0 2880 160" preserveAspectRatio="none">
+              <path d="M0,80 Q360,30 720,80 T1440,80 T2160,80 T2880,80 L2880,160 L0,160 Z" fill="currentColor" />
+            </svg>
+            <svg className="absolute bottom-0 left-0 wave-animate text-sand-50/30" style={{ width: '200%', height: '100%' }} viewBox="0 0 2880 160" preserveAspectRatio="none">
+              <path d="M0,110 Q360,70 720,110 T1440,110 T2160,110 T2880,110 L2880,160 L0,160 Z" fill="currentColor" />
+            </svg>
+            <svg className="absolute bottom-0 left-0 wave-animate-reverse text-sand-50" style={{ width: '200%', height: '100%' }} viewBox="0 0 2880 160" preserveAspectRatio="none">
+              <path d="M0,140 Q360,115 720,140 T1440,140 T2160,140 T2880,140 L2880,160 L0,160 Z" fill="currentColor" />
+            </svg>
+          </div>
+
+          {/* Marca editorial */}
+          <div className="absolute top-24 md:top-28 inset-x-0 z-10">
+            <div className="max-w-editorial mx-auto px-6 md:px-10">
+              <div className="flex items-center justify-between fade-up fade-up-1">
+                <span className="eyebrow text-sand-50/95">N°01 · Edición del Mediterráneo</span>
+                <span className="eyebrow text-sand-50/85 hidden md:inline tabular-nums">38°54′N · 1°26′E</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Titular principal */}
+          <div className="absolute inset-0 flex items-center z-10">
+            <div className="max-w-editorial mx-auto px-6 md:px-10 w-full">
+              <h1 className="font-display font-light text-display-xl text-sand-50 leading-[0.88]">
+                <span className="block fade-up fade-up-2">Cocina</span>
+                <span className="block italic font-normal text-gold-300 fade-up fade-up-3">del mar</span>
+                <span className="block fade-up fade-up-4">en privado.</span>
+              </h1>
+              <div className="mt-8 md:mt-10 max-w-md fade-up fade-up-5">
+                <p className="text-base md:text-lg text-sand-50/90 font-light leading-relaxed">
+                  Chef privado en Ibiza, dirigido por Pau Baena.<br />
+                  Cenas, eventos, bodas y celebraciones con producto local.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Indicador de scroll */}
+          <div className="absolute bottom-6 left-0 right-0 z-10">
+            <div className="max-w-editorial mx-auto px-6 md:px-10 flex items-end justify-between fade-up fade-up-6">
+              <div className="hidden md:flex flex-col items-center">
+                <span className="eyebrow text-sand-50/80 mb-3 -rotate-90 origin-bottom translate-y-2">Scroll</span>
+                <span className="block w-px h-12 bg-sand-50/30 relative overflow-hidden">
+                  <span className="absolute inset-0 bg-sand-50 scroll-pulse"></span>
+                </span>
+              </div>
+              <div className="flex items-baseline gap-6 ml-auto">
+                <span className="eyebrow text-sand-50/80">Santa Gertrudis</span>
+                <span className="eyebrow text-sand-50/80 tabular-nums">DeliXef · 2026</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-          <div className="w-px h-8 bg-sand-50/40" />
-          <span className="text-xs tracking-widest uppercase text-sand-50/40">Scroll</span>
+        {/* Lead + CTA + Stats — bajo la imagen */}
+        <div className="max-w-editorial mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-20 md:pb-28">
+          <div className="grid grid-cols-12 gap-x-6 md:gap-x-10 gap-y-12">
+            <div className="col-span-12 md:col-span-7 lg:col-span-6">
+              <span className="eyebrow text-amber-500 block mb-6">— Manifiesto</span>
+              <p className="font-display text-2xl md:text-3xl text-ink font-light leading-snug">
+                <span className="italic text-sea-600">DeliXef</span> diseña la cocina de tus cenas, eventos y celebraciones privadas en Ibiza.
+              </p>
+              <p className="mt-6 text-base md:text-lg text-ink-soft font-light leading-relaxed max-w-md">
+                Un equipo de cocina, barra y sala que llega a tu villa, monta el servicio y se va sin que tengas que mover un plato. Tú solo te ocupas de tus invitados.
+              </p>
+              <div className="mt-10 flex flex-col sm:flex-row gap-3">
+                <Link
+                  href="/reservar"
+                  className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-400 text-white px-8 py-4 text-xs font-semibold tracking-[0.22em] uppercase transition-colors rounded-full"
+                >
+                  Reservar mi experiencia
+                </Link>
+                <Link
+                  href="/servicios"
+                  className="inline-flex items-center justify-center px-2 py-4 text-xs font-semibold tracking-[0.22em] uppercase text-ink hover:text-amber-500 transition-colors"
+                >
+                  Ver servicios →
+                </Link>
+              </div>
+            </div>
+
+            <div className="col-span-12 md:col-span-4 md:col-start-9 md:border-l border-gold-200 md:pl-8">
+              <span className="eyebrow text-amber-500 block mb-6">— Sobre la casa</span>
+              <ul className="divide-y divide-gold-200/60">
+                <li className="py-4 flex items-baseline justify-between">
+                  <span className="eyebrow text-ink-mute">Cocina</span>
+                  <span className="font-display text-xl text-ink italic">Mediterránea</span>
+                </li>
+                <li className="py-4 flex items-baseline justify-between">
+                  <span className="eyebrow text-ink-mute">Formato</span>
+                  <span className="font-display text-xl text-ink">Privado</span>
+                </li>
+                <li className="py-4 flex items-baseline justify-between">
+                  <span className="eyebrow text-ink-mute">Aforo</span>
+                  <span className="font-display text-xl text-ink tabular-nums">2 — 200</span>
+                </li>
+                <li className="py-4 flex items-baseline justify-between">
+                  <span className="eyebrow text-ink-mute">Base</span>
+                  <span className="font-display text-xl text-ink">Sta. Gertrudis</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
