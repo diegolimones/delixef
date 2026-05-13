@@ -11,25 +11,25 @@ describe('Button Component', () => {
   it('applies primary variant styles', () => {
     render(<Button variant="primary">Primary</Button>);
     const button = screen.getByRole('button', { name: /primary/i });
-    expect(button).toHaveClass('bg-gold-500', 'text-white');
+    expect(button).toHaveClass('bg-ink', 'text-sand-50');
   });
 
   it('applies secondary variant styles', () => {
     render(<Button variant="secondary">Secondary</Button>);
     const button = screen.getByRole('button', { name: /secondary/i });
-    expect(button).toHaveClass('bg-terracotta', 'text-white');
+    expect(button).toHaveClass('bg-coral-500', 'text-sand-50');
   });
 
   it('applies outline variant styles', () => {
     render(<Button variant="outline">Outline</Button>);
     const button = screen.getByRole('button', { name: /outline/i });
-    expect(button).toHaveClass('border-2', 'border-gold-500', 'text-gold-500');
+    expect(button).toHaveClass('border', 'border-ink', 'text-ink');
   });
 
   it('applies size classes', () => {
     render(<Button size="lg">Large</Button>);
     const button = screen.getByRole('button', { name: /large/i });
-    expect(button).toHaveClass('px-8', 'py-4', 'text-lg');
+    expect(button).toHaveClass('px-9', 'py-4');
   });
 
   it('handles disabled state', () => {

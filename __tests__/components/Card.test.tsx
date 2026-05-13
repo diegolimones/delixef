@@ -11,19 +11,19 @@ describe('Card Component', () => {
   it('applies default card styles', () => {
     const { container } = render(<Card>Content</Card>);
     const card = container.firstChild;
-    expect(card).toHaveClass('rounded-lg', 'bg-white', 'p-6', 'border');
+    expect(card).toHaveClass('p-7', 'border', 'bg-cream-50');
   });
 
   it('applies hover effect when hover prop is true', () => {
     const { container } = render(<Card hover>Hover card</Card>);
     const card = container.firstChild;
-    expect(card).toHaveClass('hover:shadow-lg', 'hover:border-gold-500');
+    expect(card).toHaveClass('hover:border-olive-400');
   });
 
   it('does not apply hover effect when hover prop is false', () => {
     const { container } = render(<Card hover={false}>No hover</Card>);
     const card = container.firstChild;
-    expect(card).not.toHaveClass('hover:shadow-lg');
+    expect(card).not.toHaveClass('hover:border-olive-400');
   });
 
   it('applies custom className', () => {
@@ -41,6 +41,6 @@ describe('Card Component', () => {
   it('has transition styles by default', () => {
     const { container } = render(<Card>Content</Card>);
     const card = container.firstChild;
-    expect(card).toHaveClass('transition-all', 'duration-200');
+    expect(card).toHaveClass('transition-colors', 'duration-200');
   });
 });

@@ -11,7 +11,7 @@ describe('Container Component', () => {
   it('applies container styles', () => {
     const { container } = render(<Container>Content</Container>);
     const div = container.firstChild;
-    expect(div).toHaveClass('max-w-7xl', 'mx-auto', 'px-4');
+    expect(div).toHaveClass('max-w-editorial', 'mx-auto', 'px-6');
   });
 
   it('applies custom className', () => {
@@ -27,7 +27,7 @@ describe('Container Component', () => {
       <Container className="custom-class">Content</Container>
     );
     const div = container.firstChild;
-    expect(div).toHaveClass('max-w-7xl');
+    expect(div).toHaveClass('max-w-editorial');
     expect(div).toHaveClass('custom-class');
   });
 });
