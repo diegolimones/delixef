@@ -17,7 +17,7 @@ describe('Card Component', () => {
   it('applies hover effect when hover prop is true', () => {
     const { container } = render(<Card hover>Hover card</Card>);
     const card = container.firstChild;
-    expect(card).toHaveClass('hover:shadow-lg', 'hover:border-gold');
+    expect(card).toHaveClass('hover:shadow-lg', 'hover:border-gold-500');
   });
 
   it('does not apply hover effect when hover prop is false', () => {
@@ -33,9 +33,9 @@ describe('Card Component', () => {
   });
 
   it('renders with custom border color', () => {
-    const { container } = render(<Card className="border-gold">Bordered</Card>);
+    const { container } = render(<Card className="border-gold-500">Bordered</Card>);
     const card = container.firstChild;
-    expect(card).toHaveClass('border-gold');
+    expect(card).toHaveClass('border-gold-500');
   });
 
   it('has transition styles by default', () => {

@@ -11,7 +11,7 @@ describe('Button Component', () => {
   it('applies primary variant styles', () => {
     render(<Button variant="primary">Primary</Button>);
     const button = screen.getByRole('button', { name: /primary/i });
-    expect(button).toHaveClass('bg-gold', 'text-white');
+    expect(button).toHaveClass('bg-gold-500', 'text-white');
   });
 
   it('applies secondary variant styles', () => {
@@ -23,7 +23,7 @@ describe('Button Component', () => {
   it('applies outline variant styles', () => {
     render(<Button variant="outline">Outline</Button>);
     const button = screen.getByRole('button', { name: /outline/i });
-    expect(button).toHaveClass('border-2', 'border-gold', 'text-gold');
+    expect(button).toHaveClass('border-2', 'border-gold-500', 'text-gold-500');
   });
 
   it('applies size classes', () => {
