@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { services } from '@/lib/services';
 import Gallery, { GalleryItem } from '../components/Gallery';
 import ChefBio from '../components/ChefBio';
 import ValueProps from '../components/ValueProps';
@@ -173,6 +174,51 @@ export default function HomePage() {
       </section>
 
       <Gallery items={galeria} />
+
+      {/* LISTA EDITORIAL DE SERVICIOS — fondo oscuro */}
+      <section className="bg-sea-900 text-sand-50 py-24 md:py-36 relative overflow-hidden border-t border-sand-50/10">
+        <svg aria-hidden="true" className="absolute top-0 left-0 right-0 w-full opacity-[0.07] pointer-events-none" viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path d="M0,60 Q360,10 720,60 T1440,60" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M0,80 Q360,30 720,80 T1440,80" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+
+        <div className="relative max-w-editorial mx-auto px-6 md:px-10">
+          <div className="grid grid-cols-12 gap-6 mb-16 md:mb-24">
+            <div className="col-span-12 md:col-span-3">
+              <span className="eyebrow text-foam-400">— La Carta</span>
+            </div>
+            <div className="col-span-12 md:col-span-9">
+              <h2 className="font-display font-light text-display-lg leading-[0.96]">
+                Siete formatos.<br />
+                <span className="italic text-gold-300">Una misma idea</span> de mesa.
+              </h2>
+            </div>
+          </div>
+
+          <ul className="divide-y divide-sand-50/15 border-y border-sand-50/15">
+            {services.map((s) => (
+              <li key={s.num}>
+                <Link
+                  href={`/servicios#${s.id}`}
+                  className="group grid grid-cols-12 gap-4 md:gap-6 py-8 md:py-10 items-baseline hover:bg-sand-50/[0.04] transition-colors duration-300 -mx-4 px-4 md:-mx-6 md:px-6"
+                >
+                  <span className="col-span-2 md:col-span-1 font-display text-2xl md:text-3xl text-gold-400 font-light">{s.num}</span>
+                  <div className="col-span-10 md:col-span-4">
+                    <h3 className="font-display text-3xl md:text-5xl font-light text-sand-50 leading-none group-hover:italic transition-all duration-300">{s.name}</h3>
+                    <div className="eyebrow text-foam-400 mt-2 md:mt-3">{s.subtitle}</div>
+                  </div>
+                  <p className="col-span-12 md:col-span-5 text-base md:text-lg text-sand-50/75 font-light leading-relaxed">{s.shortDescription}</p>
+                  <div className="col-span-12 md:col-span-2 md:text-right">
+                    <span className="eyebrow text-sand-50/50 block">Desde</span>
+                    <span className="font-display text-xl md:text-2xl text-sand-50 mt-1 inline-block">{s.precio}</span>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <ChefBio />
       <ValueProps />
       <Testimonials items={testimonios} />
