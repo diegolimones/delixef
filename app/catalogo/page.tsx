@@ -1,304 +1,314 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import Link from 'next/link';
+import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+
+type Category = 'Todos' | 'Desayunos' | 'Comidas' | 'Cenas' | 'Eventos';
 
 interface MenuItem {
-  id: string;
   name: string;
-  description?: string;
-  category: 'desayuno' | 'comida' | 'cena' | 'evento';
-  price?: number;
-  ingredients?: string;
-  dietary_restrictions?: string;
-  available: boolean;
+  description: string;
+  ingredients: string;
+  dietary: string;
+  price: number;
+  category: Exclude<Category, 'Todos'>;
 }
 
-const categoryLabels: Record<string, string> = {
-  desayuno: 'Desayuno',
-  comida: 'Comida',
-  cena: 'Cena',
-  evento: 'Evento',
-};
+const menuItems: MenuItem[] = [
+  // CENAS
+  {
+    name: 'Cena BBQ premium',
+    description: 'Parrilla a la vista con producto de primera. Pulpo a la brasa, costilla madurada 45 días, verduras del huerto y salsas caseras.',
+    ingredients: 'Pulpo gallego, costilla angus madurada, verduras de temporada, salsas artesanales',
+    dietary: 'Sin gluten',
+    price: 85,
+    category: 'Cenas',
+  },
+  {
+    name: 'Menú vegetariano del huerto — 5 pases',
+    description: 'Cinco pases 100% vegetales con producto del huerto local. Sin renunciar a la complejidad ni al sabor.',
+    ingredients: 'Verduras del huerto, legumbres, hierbas frescas, fermentados artesanales, semillas',
+    dietary: 'Vegetariano · Vegano y sin gluten bajo solicitud',
+    price: 70,
+    category: 'Cenas',
+  },
+  {
+    name: 'Cena romántica para dos',
+    description: 'Menú íntimo de cuatro pases diseñado para dos personas. Producto de temporada, vela y servicio personalizado.',
+    ingredients: 'Producto de temporada, mariscos selectos, carne o pescado al gusto, postre artesanal',
+    dietary: 'Adaptable a cualquier restricción · Menú personalizable',
+    price: 120,
+    category: 'Cenas',
+  },
+  {
+    name: 'Menú degustación — 6 pases',
+    description: 'Recorrido por la cocina mediterránea contemporánea. Tres entradas, pescado del día, carne madurada, postre y petit fours.',
+    ingredients: 'Producto de mercado del día, elaboraciones de temporada, petit fours artesanales',
+    dietary: 'Adaptable a alergias e intolerancias · Avísanos al reservar',
+    price: 95,
+    category: 'Cenas',
+  },
+  {
+    name: 'Menú del mar — 5 pases',
+    description: 'Cinco pases centrados en el producto del puerto: tartar de atún, gamba blanca, pescado a la sal, arroz cremoso, postre cítrico.',
+    ingredients: 'Atún rojo, gamba blanca de Ibiza, pescado de roca, arroz, cítricos de la isla',
+    dietary: 'Sin gluten · Sin lácteos bajo solicitud',
+    price: 90,
+    category: 'Cenas',
+  },
+  // COMIDAS
+  {
+    name: 'Mediterráneo compartido',
+    description: 'Selección de tapas para mesa larga: ensalada payesa, bullit de peix, tumbet, croquetas de jamón, pa amb oli.',
+    ingredients: 'Pescados de la lonja, verduras del huerto, jamón ibérico, queso, aceite de oliva virgen',
+    dietary: 'Adaptable a vegetariano',
+    price: 55,
+    category: 'Comidas',
+  },
+  {
+    name: 'Bullit de peix tradicional',
+    description: 'Plato emblemático de la isla. Pescado de roca cocinado lentamente con patata y servido con arroz a banda.',
+    ingredients: 'Pescado de roca, patata payesa, arroz bomba, alioli, fumet, azafrán',
+    dietary: 'Sin gluten',
+    price: 65,
+    category: 'Comidas',
+  },
+  {
+    name: 'Paella valenciana clásica',
+    description: 'La receta original con pollo de corral, conejo, garrofón y judía verde. Socarrat perfecto, cocinada a la leña.',
+    ingredients: 'Arroz bomba, pollo de corral, conejo, garrofón, judía verde, tomate, pimentón, azafrán',
+    dietary: 'Sin gluten · Sin mariscos',
+    price: 52,
+    category: 'Comidas',
+  },
+  {
+    name: 'Arroz marinero a la vista',
+    description: 'Nuestro plato sello. Arroz bomba ibicenco con sofrito tradicional, cocinado en directo en paellera grande sobre fuego de leña.',
+    ingredients: 'Arroz bomba, sepia, gambas rojas, almejas, mejillones, fumet de roca, azafrán',
+    dietary: 'Sin gluten',
+    price: 60,
+    category: 'Comidas',
+  },
+  {
+    name: 'Arroz negro de calamar',
+    description: 'Arroz negro caldoso con calamar fresco del puerto, alioli suave de azafrán y picada de hierbas.',
+    ingredients: 'Arroz bomba, calamar, tinta natural, ajo negro, perejil, alioli',
+    dietary: 'Sin gluten',
+    price: 60,
+    category: 'Comidas',
+  },
+  // DESAYUNOS
+  {
+    name: 'Mesa de desayuno mediterránea',
+    description: 'Pan de masa madre, fruta de temporada, embutido ibérico, quesos isleños, café de especialidad y zumos recién exprimidos.',
+    ingredients: 'Pan de masa madre, sobrasada, queso payés, miel local, fruta de temporada, café',
+    dietary: 'Opción vegetariana y sin gluten disponible',
+    price: 40,
+    category: 'Desayunos',
+  },
+  {
+    name: 'Brunch hortelano',
+    description: 'Tortilla francesa con verduras del huerto, tostadas de aguacate y tomate, salmón curado, granola casera con yogur de oveja.',
+    ingredients: 'Huevos camperos, aguacate, tomate raf, salmón ahumado, yogur de oveja, frutos secos',
+    dietary: 'Sin gluten bajo solicitud · Opción vegana disponible',
+    price: 45,
+    category: 'Desayunos',
+  },
+  {
+    name: 'Desayuno ibicenco clásico',
+    description: 'Pa amb oli con tomate fresco y aceite virgen extra de la isla, embutidos locales, ensaimada artesanal y zumo de naranja.',
+    ingredients: 'Pan payés, tomate, aceite de oliva ibicenco, sobrasada, butifarrón, ensaimada',
+    dietary: 'Contiene gluten y lácteos',
+    price: 28,
+    category: 'Desayunos',
+  },
+  // EVENTOS
+  {
+    name: 'Cocktail de bienvenida premium',
+    description: 'Selección de canapés calientes y fríos, croquetas de la abuela, jamón ibérico al corte, brochetas y mini paellas.',
+    ingredients: 'Producto ibérico, mariscos, verduras de temporada, panes artesanos',
+    dietary: 'Opciones vegetarianas y sin gluten incluidas',
+    price: 35,
+    category: 'Eventos',
+  },
+  {
+    name: 'Estación de paellas',
+    description: 'Servicio de tres arroces simultáneos cocinados a la vista: marinera, ciega de verduras y vegetariana.',
+    ingredients: 'Arroz bomba, fumet, pescados, verduras, azafrán, alioli casero',
+    dietary: 'Sin gluten · Opción vegetariana',
+    price: 28,
+    category: 'Eventos',
+  },
+  {
+    name: 'Big BBQ ibicenco',
+    description: 'Parrilla grande con carnes, pescados y verduras del mercado local. Producto de la isla cocinado al fuego para grupos.',
+    ingredients: 'Cordero ibicenco, pescados de la lonja, verduras del huerto, embutidos artesanos',
+    dietary: 'Adaptable a vegetariano y sin gluten',
+    price: 45,
+    category: 'Eventos',
+  },
+  {
+    name: 'Barra de coctelería de autor',
+    description: 'Cocktails clásicos y de autor con cítricos isleños, hierbas frescas y destilados premium. Servicio con bartender.',
+    ingredients: 'Destilados premium, cítricos locales, hierbas aromáticas, frutas de temporada',
+    dietary: 'Opciones sin alcohol disponibles',
+    price: 25,
+    category: 'Eventos',
+  },
+  {
+    name: 'Mesa dulce y petit fours',
+    description: 'Pastelería artesanal, frutas confitadas, helados de elaboración propia y bombonería de temporada.',
+    ingredients: 'Mantequilla, frutos secos, frutas, chocolates de origen, vainilla de Madagascar',
+    dietary: 'Opciones sin gluten y sin lactosa disponibles',
+    price: 18,
+    category: 'Eventos',
+  },
+];
+
+const CATEGORIES: Category[] = ['Todos', 'Desayunos', 'Comidas', 'Cenas', 'Eventos'];
 
 const heroImage =
-  'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=1600&q=85&auto=format&fit=crop';
-
-const customMenuImage =
-  'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1200&q=85&auto=format&fit=crop';
+  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=85&auto=format&fit=crop';
 
 export default function Catalogo() {
-  const [menus, setMenus] = useState<MenuItem[]>([]);
-  const [filteredMenus, setFilteredMenus] = useState<MenuItem[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<
-    'todas' | 'desayuno' | 'comida' | 'cena' | 'evento'
-  >('todas');
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [active, setActive] = useState<Category>('Todos');
 
-  const categories = [
-    { id: 'todas', label: 'Todos' },
-    { id: 'desayuno', label: 'Desayunos' },
-    { id: 'comida', label: 'Comidas' },
-    { id: 'cena', label: 'Cenas' },
-    { id: 'evento', label: 'Eventos' },
-  ];
-
-  useEffect(() => {
-    fetchMenus();
-  }, []);
-
-  const fetchMenus = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const { data, error: sbError } = await supabase
-        .from('menus')
-        .select('*')
-        .eq('available', true)
-        .order('category', { ascending: true });
-
-      if (sbError) {
-        console.error('Supabase error:', sbError);
-        setError(sbError.message);
-      } else {
-        setMenus(data || []);
-        setFilteredMenus(data || []);
-      }
-    } catch (err) {
-      console.error('Error fetching menus:', err);
-      setError('Error de conexión con la base de datos');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCategoryChange = (category: any) => {
-    setSelectedCategory(category);
-
-    if (category === 'todas') {
-      setFilteredMenus(menus);
-    } else {
-      setFilteredMenus(menus.filter((menu) => menu.category === category));
-    }
-  };
+  const filtered = active === 'Todos' ? menuItems : menuItems.filter((m) => m.category === active);
 
   return (
     <>
-      {/* HERO — cinematic */}
+      {/* HERO */}
       <section className="relative -mt-20 md:-mt-24">
-        <div className="relative h-[72vh] min-h-[520px] max-h-[760px] overflow-hidden">
+        <div className="relative h-[50vh] min-h-[340px] max-h-[480px] overflow-hidden">
           <div className="absolute inset-0 hero-breathe">
             <Image
               src={heroImage}
-              alt="Plato de cocina mediterránea servido en mesa frente al mar"
+              alt="Mesa privada con servicio de chef en Ibiza"
               fill
               priority
               sizes="100vw"
               className="object-cover"
             />
           </div>
-
           <div
             aria-hidden="true"
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(180deg, oklch(0.13 0.05 232 / 0.50) 0%, oklch(0.13 0.05 232 / 0.20) 35%, oklch(0.13 0.05 232 / 0.40) 75%, oklch(0.13 0.05 232 / 0.80) 100%)',
+                'linear-gradient(180deg, oklch(0.13 0.05 232 / 0.55) 0%, oklch(0.13 0.05 232 / 0.25) 40%, oklch(0.13 0.05 232 / 0.55) 75%, oklch(0.13 0.05 232 / 0.90) 100%)',
             }}
           />
 
-          {/* Animated waves */}
-          <div
-            aria-hidden="true"
-            className="absolute bottom-0 left-0 right-0 h-24 md:h-32 overflow-hidden pointer-events-none"
-          >
-            <svg className="absolute bottom-0 left-0 wave-animate-slow text-sand-50/20" style={{ width: '200%', height: '100%' }} viewBox="0 0 2880 160" preserveAspectRatio="none">
-              <path d="M0,80 Q360,30 720,80 T1440,80 T2160,80 T2880,80 L2880,160 L0,160 Z" fill="currentColor" />
-            </svg>
-            <svg className="absolute bottom-0 left-0 wave-animate text-sand-50/30" style={{ width: '200%', height: '100%' }} viewBox="0 0 2880 160" preserveAspectRatio="none">
-              <path d="M0,110 Q360,70 720,110 T1440,110 T2160,110 T2880,110 L2880,160 L0,160 Z" fill="currentColor" />
-            </svg>
-            <svg className="absolute bottom-0 left-0 wave-animate-reverse text-sand-50" style={{ width: '200%', height: '100%' }} viewBox="0 0 2880 160" preserveAspectRatio="none">
-              <path d="M0,140 Q360,115 720,140 T1440,140 T2160,140 T2880,140 L2880,160 L0,160 Z" fill="currentColor" />
-            </svg>
-          </div>
-
-          {/* Edition mark */}
-          <div className="absolute top-24 md:top-28 inset-x-0 z-10">
+          <div className="absolute top-14 md:top-16 inset-x-0 z-10">
             <div className="max-w-editorial mx-auto px-6 md:px-10">
-              <div className="flex items-center justify-between fade-up fade-up-1">
+              <div className="flex items-center justify-between">
                 <span className="eyebrow text-sand-50/95">N°03 · Catálogo</span>
-                <span className="eyebrow text-sand-50/85 hidden md:inline tabular-nums">
-                  {menus.length > 0 ? `${menus.length} platos` : 'Mediterráneo'}
-                </span>
+                <span className="eyebrow text-sand-50/85 hidden md:inline tabular-nums">{menuItems.length} platos</span>
               </div>
             </div>
           </div>
 
-          {/* Headline */}
-          <div className="absolute inset-0 flex items-center z-10">
+          <div className="absolute inset-0 flex items-end pb-10 md:pb-14 z-10">
             <div className="max-w-editorial mx-auto px-6 md:px-10 w-full">
-              <h1 className="font-display font-light text-display-xl text-sand-50 leading-[0.88]">
-                <span className="block fade-up fade-up-2">Catálogo</span>
-                <span className="block italic font-normal text-coral-400 fade-up fade-up-3">
-                  de menús
-                </span>
+              <h1 className="font-display font-light text-4xl md:text-6xl text-sand-50 leading-tight">
+                La carta<br />
+                <span className="italic text-gold-300">de esta temporada.</span>
               </h1>
-
-              <div className="mt-8 md:mt-10 max-w-md fade-up fade-up-5">
-                <p className="text-base md:text-lg text-sand-50/90 font-light leading-relaxed">
-                  Una selección de platos y menús que servimos esta temporada.
-                  <br />
-                  Es un punto de partida — los menús finales se diseñan contigo.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom caption */}
-          <div className="absolute bottom-6 left-0 right-0 z-10">
-            <div className="max-w-editorial mx-auto px-6 md:px-10 flex items-end justify-end fade-up fade-up-6">
-              <div className="flex items-baseline gap-6">
-                <span className="eyebrow text-sand-50/80">Producto local</span>
-                <span className="eyebrow text-sand-50/80 tabular-nums">DeliXef · 2026</span>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Filter + List */}
-      <section className="bg-sand-100 border-y border-sea-200/40 py-16 md:py-24">
+      {/* FILTROS + LISTA */}
+      <section className="bg-sand-50 py-10 md:py-14">
         <div className="max-w-editorial mx-auto px-6 md:px-10">
-          {/* Editorial filter */}
-          <div className="flex items-baseline gap-2 md:gap-4 flex-wrap mb-12 md:mb-16 pb-6 border-b border-sea-200/60">
-            <span className="eyebrow text-coral-600 mr-4">— Filtrar</span>
-            {categories.map((c) => (
+
+          {/* Filtros */}
+          <div className="flex items-baseline gap-1 flex-wrap mb-10 pb-6 border-b border-sea-200/50">
+            <span className="eyebrow text-amber-500 mr-4">— Filtrar</span>
+            {CATEGORIES.map((cat) => (
               <button
-                key={c.id}
-                onClick={() => handleCategoryChange(c.id)}
-                className={`text-sm md:text-base font-light transition-colors duration-200 ${
-                  selectedCategory === c.id
-                    ? 'text-ink underline underline-offset-8 decoration-coral-500 decoration-2'
-                    : 'text-ink-mute hover:text-ink'
+                key={cat}
+                onClick={() => setActive(cat)}
+                className={`px-4 py-1.5 rounded-full text-xs tracking-wide border transition-all duration-200 mr-1 mb-1 ${
+                  active === cat
+                    ? 'bg-amber-500 border-amber-500 text-white'
+                    : 'border-sea-200/60 text-ink-mute hover:border-amber-400/60 hover:text-ink'
                 }`}
               >
-                {c.label}
+                {cat}
               </button>
             ))}
           </div>
 
-          {isLoading ? (
-            <div className="py-20 text-center text-ink-mute font-light">Cargando menús…</div>
-          ) : error ? (
-            <div className="py-20 text-center">
-              <p className="font-display text-xl text-coral-600 font-light">Error al cargar los menús</p>
-              <p className="mt-2 text-sm text-ink-mute font-mono">{error}</p>
-            </div>
-          ) : filteredMenus.length > 0 ? (
-            <ul className="divide-y divide-sea-200/60 border-t border-b border-sea-200/60">
-              {filteredMenus.map((menu) => (
-                <li
-                  key={menu.id}
-                  className="grid grid-cols-12 gap-4 md:gap-8 py-8 md:py-10 items-baseline group hover:bg-sand-50 transition-colors -mx-4 px-4 md:-mx-6 md:px-6"
-                >
-                  <div className="col-span-12 md:col-span-2">
-                    <span className="eyebrow text-coral-600">
-                      {categoryLabels[menu.category]}
-                    </span>
-                  </div>
+          {/* Lista de menús */}
+          <ul className="divide-y divide-sea-200/50 border-t border-sea-200/50">
+            {filtered.map((item, idx) => (
+              <li key={item.name} className={`grid grid-cols-12 gap-4 md:gap-8 py-6 md:py-7 group transition-colors -mx-4 px-4 md:-mx-6 md:px-6 ${
+                idx % 2 === 0 ? 'bg-sand-50 hover:bg-warm-50' : 'bg-warm-50 hover:bg-sand-100'
+              }`}>
 
-                  <div className="col-span-12 md:col-span-6">
-                    <h3 className="font-display text-2xl md:text-3xl text-ink font-light leading-tight group-hover:italic transition-all duration-300">
-                      {menu.name}
-                    </h3>
-                    {menu.description && (
-                      <p className="mt-3 text-ink-soft font-light leading-relaxed">
-                        {menu.description}
-                      </p>
-                    )}
-                    {menu.ingredients && (
-                      <p className="mt-3 text-sm text-ink-mute italic font-light">
-                        {menu.ingredients}
-                      </p>
-                    )}
-                  </div>
+                {/* Categoría */}
+                <div className="col-span-12 md:col-span-2">
+                  <span className="eyebrow text-sea-600">{item.category}</span>
+                </div>
 
-                  <div className="col-span-6 md:col-span-2">
-                    {menu.dietary_restrictions && (
-                      <span className="eyebrow text-ink-mute">
-                        {menu.dietary_restrictions}
-                      </span>
-                    )}
-                  </div>
+                {/* Nombre + descripción + ingredientes */}
+                <div className="col-span-12 md:col-span-7">
+                  <h3 className="font-display text-xl md:text-2xl text-ink font-light leading-tight group-hover:italic transition-all duration-300">
+                    {item.name}
+                  </h3>
+                  <p className="mt-2 text-sm text-ink-soft font-light leading-relaxed">
+                    {item.description}
+                  </p>
+                  <p className="mt-2 text-xs text-ink-mute font-light italic leading-relaxed">
+                    {item.ingredients}
+                  </p>
+                  <p className="mt-2 text-xs text-amber-600 font-light tracking-wide">
+                    {item.dietary}
+                  </p>
+                </div>
 
-                  <div className="col-span-6 md:col-span-2 md:text-right">
-                    {menu.price && (
-                      <span className="font-display text-2xl md:text-3xl text-ink font-light tabular-nums">
-                        {menu.price.toFixed(0)}€
-                      </span>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="py-20 text-center">
-              <p className="font-display text-2xl text-ink-soft font-light">
-                Aún no hay menús en esta categoría.
-              </p>
-              <p className="mt-4 text-ink-mute font-light max-w-md mx-auto">
-                Diseñamos cada menú a medida del evento. Cuéntanos qué tienes en mente y te enviamos una propuesta.
-              </p>
-            </div>
-          )}
+                {/* Precio + CTA */}
+                <div className="col-span-12 md:col-span-3 md:text-right flex md:flex-col md:items-end justify-between items-baseline gap-4">
+                  <span className="font-display text-2xl md:text-3xl text-ink font-light tabular-nums">
+                    {item.price}€
+                  </span>
+                  <Link
+                    href="/reservar"
+                    className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-mute hover:text-amber-500 transition-colors"
+                  >
+                    Reservar →
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-6 text-xs text-ink-mute font-light text-center">
+            Precios por persona. IVA no incluido. Mínimo 4 personas.
+          </p>
         </div>
       </section>
 
-      {/* Custom menu — with image */}
-      <section className="bg-sand-50 py-20 md:py-28 border-t border-sea-200/40">
+      {/* CTA FINAL */}
+      <section className="bg-sea-900 text-sand-50 py-12 md:py-16 border-t border-sand-50/10">
         <div className="max-w-editorial mx-auto px-6 md:px-10">
-          <div className="grid grid-cols-12 gap-y-12 gap-x-10 items-center">
-            <div className="col-span-12 md:col-span-7">
-              <span className="eyebrow text-coral-600 block mb-6">— A medida</span>
-              <h2 className="font-display font-light text-display-md text-ink leading-tight">
-                ¿No encuentras
-                <br />
-                <span className="italic text-sea-600">lo que buscas?</span>
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-6">
+            <div>
+              <span className="eyebrow text-foam-400 block mb-3">— ¿No encuentras lo que buscas?</span>
+              <h2 className="font-display font-light text-2xl md:text-3xl text-sand-50 leading-tight">
+                Cuéntanos tu evento.<br />
+                <span className="italic text-gold-300">Lo diseñamos juntos.</span>
               </h2>
-              <p className="mt-8 text-lg text-ink-soft font-light leading-relaxed max-w-xl">
-                El catálogo es un punto de partida. Si tienes una idea concreta —un plato que recuerdas, una temática, una restricción— diseñamos el menú desde cero contigo.
-              </p>
-              <Link
-                href="/contacto"
-                className="mt-10 inline-flex items-center gap-3 text-sm font-semibold text-ink hover:text-coral-600 transition-colors uppercase tracking-[0.2em]"
-              >
-                Solicitar menú a medida
-                <span className="w-10 h-px bg-current"></span>
-              </Link>
             </div>
-
-            <div className="col-span-12 md:col-span-4 md:col-start-9">
-              <div className="relative aspect-[4/5] overflow-hidden">
-                <Image
-                  src={customMenuImage}
-                  alt="Menú gastronómico personalizado de DeliXef"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <p className="font-display text-xl md:text-2xl text-sand-50 font-light leading-snug italic">
-                    «No diseñamos un menú estándar y luego intentamos encajar al cliente. Es al revés.»
-                  </p>
-                  <p className="mt-3 eyebrow text-sand-50/80">— Pau Baena</p>
-                </div>
-              </div>
-            </div>
+            <Link
+              href="/reservar"
+              className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-400 text-white px-8 py-4 text-xs font-semibold tracking-[0.22em] uppercase transition-colors rounded-full self-start md:self-auto shrink-0"
+            >
+              Solicitar fecha
+            </Link>
           </div>
         </div>
       </section>

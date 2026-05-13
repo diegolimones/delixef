@@ -7,12 +7,18 @@ import ValueProps from '../components/ValueProps';
 import Testimonials, { TestimonialItem } from '../components/Testimonials';
 
 const galeria: GalleryItem[] = [
-  { src: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=900&q=85&auto=format&fit=crop', label: 'Paella valenciana', category: 'Arroces' },
-  { src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85&auto=format&fit=crop', label: 'Cena íntima', category: 'Eventos' },
-  { src: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&q=85&auto=format&fit=crop', label: 'Boda en villa', category: 'Bodas' },
-  { src: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=900&q=85&auto=format&fit=crop', label: 'Catering eventos', category: 'Catering' },
-  { src: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=900&q=85&auto=format&fit=crop', label: 'Barra libre', category: 'Bodas' },
-  { src: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=900&q=85&auto=format&fit=crop', label: 'Arroz negro', category: 'Arroces' },
+  { src: 'https://images.unsplash.com/photo-1484723091739-30f299b86ede?w=900&q=85&auto=format&fit=crop', label: 'Mesa de desayuno mediterránea', category: 'Desayunos' },
+  { src: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=900&q=85&auto=format&fit=crop', label: 'Brunch hortelano', category: 'Desayunos' },
+  { src: 'https://images.unsplash.com/photo-1481931098730-318b6f776db0?w=900&q=85&auto=format&fit=crop', label: 'Desayuno ibicenco clásico', category: 'Desayunos' },
+  { src: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=900&q=85&auto=format&fit=crop', label: 'Paella valenciana clásica', category: 'Comidas' },
+  { src: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=900&q=85&auto=format&fit=crop', label: 'Arroz negro de calamar', category: 'Comidas' },
+  { src: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=900&q=85&auto=format&fit=crop', label: 'Arroz marinero a la vista', category: 'Comidas' },
+  { src: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=85&auto=format&fit=crop', label: 'Cena BBQ premium', category: 'Cenas' },
+  { src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85&auto=format&fit=crop', label: 'Menú degustación — 6 pases', category: 'Cenas' },
+  { src: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=85&auto=format&fit=crop', label: 'Menú del mar — 5 pases', category: 'Cenas' },
+  { src: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=900&q=85&auto=format&fit=crop', label: 'Cocktail de bienvenida premium', category: 'Eventos' },
+  { src: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&q=85&auto=format&fit=crop', label: 'Big BBQ ibicenco', category: 'Eventos' },
+  { src: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=900&q=85&auto=format&fit=crop', label: 'Estación de paellas', category: 'Eventos' },
 ];
 
 const testimonios: TestimonialItem[] = [
@@ -173,51 +179,61 @@ export default function HomePage() {
         </div>
       </section>
 
-      <Gallery items={galeria} />
-
-      {/* LISTA EDITORIAL DE SERVICIOS — fondo oscuro */}
-      <section className="bg-sea-900 text-sand-50 py-24 md:py-36 relative overflow-hidden border-t border-sand-50/10">
-        <svg aria-hidden="true" className="absolute top-0 left-0 right-0 w-full opacity-[0.07] pointer-events-none" viewBox="0 0 1440 120" preserveAspectRatio="none">
-          <path d="M0,60 Q360,10 720,60 T1440,60" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M0,80 Q360,30 720,80 T1440,80" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-
-        <div className="relative max-w-editorial mx-auto px-6 md:px-10">
-          <div className="grid grid-cols-12 gap-6 mb-16 md:mb-24">
+      {/* CATÁLOGO DE SERVICIOS */}
+      <section className="bg-sea-900 text-sand-50 py-14 md:py-20 border-t border-sand-50/10">
+        <div className="max-w-editorial mx-auto px-6 md:px-10">
+          <div className="grid grid-cols-12 gap-6 mb-10">
             <div className="col-span-12 md:col-span-3">
-              <span className="eyebrow text-foam-400">— La Carta</span>
+              <span className="eyebrow text-foam-400">— Servicios</span>
             </div>
-            <div className="col-span-12 md:col-span-9">
-              <h2 className="font-display font-light text-display-lg leading-[0.96]">
+            <div className="col-span-12 md:col-span-6">
+              <h2 className="font-display font-light text-2xl md:text-3xl leading-tight">
                 Siete formatos.<br />
                 <span className="italic text-gold-300">Una misma idea</span> de mesa.
               </h2>
             </div>
+            <div className="col-span-12 md:col-span-3 md:text-right flex md:justify-end items-start">
+              <Link href="/servicios" className="eyebrow text-sand-50/60 hover:text-gold-300 transition-colors">
+                Ver todos →
+              </Link>
+            </div>
           </div>
 
-          <ul className="divide-y divide-sand-50/15 border-y border-sand-50/15">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {services.map((s) => (
-              <li key={s.num}>
-                <Link
-                  href={`/servicios#${s.id}`}
-                  className="group grid grid-cols-12 gap-4 md:gap-6 py-8 md:py-10 items-baseline hover:bg-sand-50/[0.04] transition-colors duration-300 -mx-4 px-4 md:-mx-6 md:px-6"
-                >
-                  <span className="col-span-2 md:col-span-1 font-display text-2xl md:text-3xl text-gold-400 font-light">{s.num}</span>
-                  <div className="col-span-10 md:col-span-4">
-                    <h3 className="font-display text-3xl md:text-5xl font-light text-sand-50 leading-none group-hover:italic transition-all duration-300">{s.name}</h3>
-                    <div className="eyebrow text-foam-400 mt-2 md:mt-3">{s.subtitle}</div>
-                  </div>
-                  <p className="col-span-12 md:col-span-5 text-base md:text-lg text-sand-50/75 font-light leading-relaxed">{s.shortDescription}</p>
-                  <div className="col-span-12 md:col-span-2 md:text-right">
-                    <span className="eyebrow text-sand-50/50 block">Desde</span>
-                    <span className="font-display text-xl md:text-2xl text-sand-50 mt-1 inline-block">{s.precio}</span>
-                  </div>
-                </Link>
-              </li>
+              <Link
+                key={s.id}
+                href={`/servicios#${s.id}`}
+                className="group relative overflow-hidden rounded-xl bg-sea-800 hover:bg-sea-700 transition-colors duration-300"
+              >
+                <div className="relative aspect-[16/9] overflow-hidden">
+                  <Image
+                    src={s.image}
+                    alt={s.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-sea-900/80 to-transparent" />
+                  <span className="absolute top-3 left-3 font-display text-sm text-gold-400 font-light">{s.num}</span>
+                  <span className="absolute bottom-3 right-3 eyebrow text-sand-50/70">Desde {s.precio}</span>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-display text-lg font-light text-sand-50 leading-tight group-hover:italic transition-all duration-300">
+                    {s.name}
+                  </h3>
+                  <p className="eyebrow text-foam-400 mt-1">{s.subtitle}</p>
+                  <p className="text-xs text-sand-50/60 font-light leading-relaxed mt-2 line-clamp-2">
+                    {s.shortDescription}
+                  </p>
+                </div>
+              </Link>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
+
+      <Gallery items={galeria} />
 
       <ChefBio />
       <ValueProps />

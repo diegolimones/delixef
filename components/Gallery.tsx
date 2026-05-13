@@ -13,7 +13,7 @@ interface GalleryProps {
   items: GalleryItem[];
 }
 
-const CATEGORIES = ['Todos', 'Arroces', 'Bodas', 'Eventos', 'Catering'];
+const CATEGORIES = ['Todos', 'Desayunos', 'Comidas', 'Cenas', 'Eventos'];
 
 export default function Gallery({ items }: GalleryProps) {
   const [active, setActive] = useState('Todos');

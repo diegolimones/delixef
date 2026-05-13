@@ -21,13 +21,17 @@ export default function Header() {
       }`}
     >
       <div className="max-w-editorial mx-auto px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
-        <Link
-          href="/"
-          className={`font-display text-xl font-light tracking-wide transition-colors duration-300 ${
+        <Link href="/" className="flex flex-col leading-none">
+          <span className={`font-display text-xl font-light tracking-wide transition-colors duration-300 ${
             scrolled ? 'text-ink' : 'text-sand-50'
-          }`}
-        >
-          Delixef
+          }`}>
+            Delixef
+          </span>
+          <span className={`text-[10px] tracking-[0.18em] uppercase font-light transition-colors duration-300 ${
+            scrolled ? 'text-ink-mute' : 'text-sand-50/70'
+          }`}>
+            38°54′N · Ibiza
+          </span>
         </Link>
 
         <nav className="flex items-center gap-8">
@@ -38,6 +42,14 @@ export default function Header() {
             }`}
           >
             Servicios
+          </Link>
+          <Link
+            href="/catalogo"
+            className={`text-sm tracking-widest uppercase transition-colors duration-300 hover:text-amber-500 ${
+              scrolled ? 'text-ink-soft' : 'text-sand-100'
+            }`}
+          >
+            Catálogo
           </Link>
           <Link
             href="/reservar"

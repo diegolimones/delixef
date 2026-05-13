@@ -1,65 +1,56 @@
-import Image from 'next/image';
-
 const pillars = [
   {
-    title: 'Menús 100%\npersonalizados',
-    body: 'Adaptamos cada menú a tus gustos, restricciones y el tipo de evento. Nada es genérico.',
-    image: 'https://images.unsplash.com/photo-1543340904-0890f9fe5df2?w=800&q=85&auto=format&fit=crop',
-    label: 'A tu medida',
-    gradient: 'from-amber-900/80 via-amber-800/50 to-transparent',
+    num: 'I.',
+    title: 'Cocina, salud y hábitos',
+    body: 'La filosofía con la que cocina Pau Baena. Producto fresco, técnica precisa y menús que respetan a quién y cómo se come.',
   },
   {
-    title: 'Servicio\ncompleto',
-    body: 'De la compra a la limpieza. Tú solo disfrutas. Nosotros nos encargamos de todo lo demás.',
-    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=85&auto=format&fit=crop',
-    label: 'Sin estrés',
-    gradient: 'from-sea-900/80 via-sea-800/50 to-transparent',
+    num: 'II.',
+    title: 'Sin guion fijo',
+    body: 'Cada menú se construye sobre la conversación previa: gustos, alergias, ritmo del evento, hora del atardecer en esa villa concreta.',
   },
   {
-    title: 'Producto local\nde temporada',
-    body: 'Mercados locales de Ibiza, ingredientes de temporada, kilómetro 0. El sabor lo nota.',
-    image: 'https://images.unsplash.com/photo-1464306208223-e0b4495b5776?w=800&q=85&auto=format&fit=crop',
-    label: 'Km 0 · Ibiza',
-    gradient: 'from-ink/80 via-ink/50 to-transparent',
+    num: 'III.',
+    title: 'Servicio invisible',
+    body: 'Llegamos, montamos, cocinamos y dejamos el espacio como lo encontramos. Tú solo te ocupas de tus invitados.',
+  },
+  {
+    num: 'IV.',
+    title: 'De Santa Gertrudis a toda la isla',
+    body: 'Operamos desde el centro de Ibiza. Nos desplazamos con el equipo completo a calas, fincas y villas en cualquier punto.',
   },
 ];
 
 export default function ValueProps() {
   return (
-    <section className="bg-warm-50 py-24 md:py-36">
+    <section className="bg-ink py-14 md:py-20 border-t border-sand-50/10">
       <div className="max-w-editorial mx-auto px-6 md:px-10">
-        <div className="mb-14">
-          <span className="text-xs tracking-widest uppercase text-amber-500 block mb-3">— Por qué Delixef</span>
-          <h2 className="font-display font-light text-4xl md:text-5xl text-ink leading-tight">
-            ¿Por qué <span className="italic text-gold-500">elegirnos?</span>
-          </h2>
+        <div className="grid grid-cols-12 gap-6 mb-12">
+          <div className="col-span-12 md:col-span-3">
+            <span className="eyebrow text-foam-400">— Por qué Delixef</span>
+          </div>
+          <div className="col-span-12 md:col-span-9">
+            <h2 className="font-display font-light text-3xl md:text-4xl text-sand-50 leading-tight">
+              Cuatro razones.<br />
+              <span className="italic text-gold-300">Una forma de entender la mesa.</span>
+            </h2>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          {pillars.map((p) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 divide-sand-50/10 border-t border-sand-50/10">
+          {pillars.map((p, i) => (
             <article
-              key={p.title}
-              className="relative overflow-hidden rounded-2xl group aspect-[3/4] md:aspect-auto md:min-h-[420px]"
+              key={p.num}
+              className={`py-10 md:py-12 flex gap-6 md:gap-8 ${
+                i % 2 === 0 ? 'md:border-r border-sand-50/10 md:pr-10' : 'md:pl-10'
+              } ${i >= 2 ? 'md:border-t border-sand-50/10' : ''}`}
             >
-              {/* Imagen de fondo */}
-              <Image
-                src={p.image}
-                alt={p.title.replace('\n', ' ')}
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-
-              {/* Gradiente */}
-              <div className={`absolute inset-0 bg-gradient-to-t ${p.gradient}`} />
-
-              {/* Contenido */}
-              <div className="absolute inset-0 flex flex-col justify-end p-8">
-                <span className="text-xs tracking-widest uppercase text-sand-50/60 mb-4">{p.label}</span>
-                <h3 className="font-display font-light text-3xl text-sand-50 leading-tight mb-4 whitespace-pre-line">
+              <span className="font-display text-2xl text-sea-400 font-light shrink-0 tabular-nums w-8">{p.num}</span>
+              <div>
+                <h3 className="font-display font-light text-xl md:text-2xl text-sand-50 mb-3 leading-snug">
                   {p.title}
                 </h3>
-                <p className="text-sand-50/80 font-light leading-relaxed text-sm max-w-xs opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                <p className="text-sand-50/65 text-base font-light leading-relaxed">
                   {p.body}
                 </p>
               </div>
