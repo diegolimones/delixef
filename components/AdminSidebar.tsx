@@ -122,7 +122,7 @@ export default function AdminSidebar() {
             ↗ Ver web pública
           </Link>
           <button
-            onClick={() => signOut({ callbackUrl: '/' })}
+            onClick={() => signOut({ callbackUrl: '/admin/login' })}
             className="w-full inline-flex items-center justify-center bg-coral-500 text-sand-50 px-5 py-3 rounded-full text-xs font-semibold tracking-[0.2em] uppercase hover:bg-coral-600 transition-colors"
           >
             Cerrar sesión
