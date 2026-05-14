@@ -108,7 +108,7 @@ export default async function HomePage() {
         </div>
 
         {/* Lead + CTA + Stats — bajo la imagen */}
-        <div className="max-w-editorial mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-20 md:pb-28">
+        <div className="max-w-editorial mx-auto px-6 md:px-10 pt-8 md:pt-12 pb-10 md:pb-14">
           <div className="grid grid-cols-12 gap-x-6 md:gap-x-10 gap-y-12">
             <div className="col-span-12 md:col-span-7 lg:col-span-6">
               <span className="eyebrow text-amber-500 block mb-6">— Manifiesto</span>
