@@ -5,44 +5,24 @@ import Gallery, { GalleryItem } from '../components/Gallery';
 import ChefBio from '../components/ChefBio';
 import ValueProps from '../components/ValueProps';
 import Testimonials, { TestimonialItem } from '../components/Testimonials';
+import Prensa from '../components/Prensa';
+import { supabaseServer } from '@/lib/supabase';
 
-const galeria: GalleryItem[] = [
-  { src: 'https://images.unsplash.com/photo-1484723091739-30f299b86ede?w=900&q=85&auto=format&fit=crop', label: 'Mesa de desayuno mediterránea', category: 'Desayunos' },
-  { src: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=900&q=85&auto=format&fit=crop', label: 'Brunch hortelano', category: 'Desayunos' },
-  { src: 'https://images.unsplash.com/photo-1481931098730-318b6f776db0?w=900&q=85&auto=format&fit=crop', label: 'Desayuno ibicenco clásico', category: 'Desayunos' },
-  { src: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=900&q=85&auto=format&fit=crop', label: 'Paella valenciana clásica', category: 'Comidas' },
-  { src: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=900&q=85&auto=format&fit=crop', label: 'Arroz negro de calamar', category: 'Comidas' },
-  { src: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=900&q=85&auto=format&fit=crop', label: 'Arroz marinero a la vista', category: 'Comidas' },
-  { src: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=85&auto=format&fit=crop', label: 'Cena BBQ premium', category: 'Cenas' },
-  { src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85&auto=format&fit=crop', label: 'Menú degustación — 6 pases', category: 'Cenas' },
-  { src: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=85&auto=format&fit=crop', label: 'Menú del mar — 5 pases', category: 'Cenas' },
-  { src: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=900&q=85&auto=format&fit=crop', label: 'Cocktail de bienvenida premium', category: 'Eventos' },
-  { src: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&q=85&auto=format&fit=crop', label: 'Big BBQ ibicenco', category: 'Eventos' },
-  { src: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=900&q=85&auto=format&fit=crop', label: 'Estación de paellas', category: 'Eventos' },
-];
+export default async function HomePage() {
+  const { data: galeriaData } = await supabaseServer
+    .from('galeria')
+    .select('src, label, category')
+    .eq('visible', true)
+    .order('orden', { ascending: true });
 
-const testimonios: TestimonialItem[] = [
-  {
-    name: 'Sarah & Tom',
-    context: 'Boda en Villa, Ibiza 2024',
-    text: 'Contratar a Delixef fue lo mejor que hicimos para nuestra boda. Los invitados aún hablan de ello. La paella fue espectacular.',
-    stars: 5,
-  },
-  {
-    name: 'Carlos Martínez',
-    context: 'Cena de aniversario privada, 2024',
-    text: 'Una experiencia que no olvidaremos. El menú fue perfecto, el servicio impecable y la atención al detalle increíble.',
-    stars: 5,
-  },
-  {
-    name: 'The Johnson Family',
-    context: 'Alquiler vacacional, verano 2024',
-    text: 'Tres semanas con Delixef cocinando para nosotros. Cada día una sorpresa. El mejor recuerdo de nuestras vacaciones.',
-    stars: 5,
-  },
-];
+  const { data: testimoniosData } = await supabaseServer
+    .from('testimonios')
+    .select('name, context, text, stars')
+    .eq('visible', true)
+    .order('created_at', { ascending: true });
 
-export default function HomePage() {
+  const galeria: GalleryItem[] = galeriaData || [];
+  const testimonios: TestimonialItem[] = (testimoniosData || []) as TestimonialItem[];
   return (
     <>
       {/* HERO — cinematográfico full-bleed */}
@@ -180,7 +160,7 @@ export default function HomePage() {
       </section>
 
       {/* CATÁLOGO DE SERVICIOS */}
-      <section className="bg-sea-900 text-sand-50 py-14 md:py-20 border-t border-sand-50/10">
+      <section className="bg-sea-900 text-sand-50 pt-14 pb-8 md:pt-20 md:pb-10 border-t border-sand-50/10">
         <div className="max-w-editorial mx-auto px-6 md:px-10">
           <div className="grid grid-cols-12 gap-6 mb-10">
             <div className="col-span-12 md:col-span-3">
@@ -203,7 +183,7 @@ export default function HomePage() {
             {services.map((s) => (
               <Link
                 key={s.id}
-                href={`/servicios#${s.id}`}
+                href={`/servicios#${s.num}`}
                 className="group relative overflow-hidden rounded-xl bg-sea-800 hover:bg-sea-700 transition-colors duration-300"
               >
                 <div className="relative aspect-[16/9] overflow-hidden">
@@ -238,6 +218,7 @@ export default function HomePage() {
       <ChefBio />
       <ValueProps />
       <Testimonials items={testimonios} />
+      <Prensa />
 
       {/* CTA FINAL */}
       <section className="relative py-32 md:py-48 overflow-hidden">

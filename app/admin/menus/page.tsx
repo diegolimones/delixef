@@ -282,7 +282,7 @@ export default function AdminMenus() {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center bg-ink text-sand-50 px-8 py-4 text-xs font-semibold tracking-[0.22em] uppercase hover:bg-coral-600 transition-colors"
+                className="inline-flex items-center justify-center bg-ink text-sand-50 px-8 py-4 rounded-full text-xs font-semibold tracking-[0.22em] uppercase hover:bg-coral-600 transition-colors"
               >
                 {isEditing ? 'Actualizar menú' : 'Crear menú'}
               </button>
@@ -290,7 +290,7 @@ export default function AdminMenus() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="inline-flex items-center justify-center px-6 py-4 text-xs font-semibold tracking-[0.22em] uppercase text-ink hover:text-coral-600 transition-colors border border-ink"
+                  className="inline-flex items-center justify-center px-6 py-4 rounded-full text-xs font-semibold tracking-[0.22em] uppercase text-ink hover:text-coral-600 transition-colors border border-ink"
                 >
                   Cancelar
                 </button>
@@ -346,18 +346,18 @@ export default function AdminMenus() {
                   <div className="col-span-6 md:col-span-3 flex flex-col sm:flex-row gap-3 sm:items-baseline sm:justify-end text-xs font-semibold tracking-[0.18em] uppercase">
                     <button
                       onClick={() => handleToggleAvailable(menu.id, menu.available)}
-                      className={`inline-flex items-center gap-2 transition-colors ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.65rem] font-semibold tracking-[0.18em] uppercase transition-colors ${
                         menu.available
-                          ? 'text-sea-800 hover:text-coral-600'
-                          : 'text-ink-mute hover:text-ink'
+                          ? 'bg-sea-100 text-sea-800 hover:bg-coral-50 hover:text-coral-700'
+                          : 'bg-ink/[0.06] text-ink-mute hover:bg-ink/10 hover:text-ink'
                       }`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
-                          menu.available ? 'bg-sea-800' : 'bg-ink-mute'
+                          menu.available ? 'bg-sea-600' : 'bg-ink-mute'
                         }`}
-                      ></span>
-                      {menu.available ? 'On' : 'Off'}
+                      />
+                      {menu.available ? 'Activo' : 'Inactivo'}
                     </button>
                     <button
                       onClick={() => handleEdit(menu)}

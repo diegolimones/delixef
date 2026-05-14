@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { services as servicios } from '@/lib/services';
+import { supabaseServer } from '@/lib/supabase';
 
 export const metadata: Metadata = {
   title: 'Servicios | Delixef — Chef Privado en Ibiza',
@@ -39,7 +39,24 @@ const proceso = [
   },
 ];
 
-export default function Servicios() {
+export default async function Servicios() {
+  const { data } = await supabaseServer
+    .from('servicios')
+    .select('num, name, subtitle, short_description, description, details, precio, image')
+    .eq('available', true)
+    .order('num', { ascending: true });
+
+  const servicios = (data || []) as Array<{
+    num: string;
+    name: string;
+    subtitle: string;
+    short_description: string;
+    description: string;
+    details: string[];
+    precio: string;
+    image: string;
+  }>;
+
   return (
     <>
       {/* HERO */}
@@ -94,8 +111,8 @@ export default function Servicios() {
         const reversed = i % 2 === 1;
         return (
           <section
-            key={s.id}
-            id={s.id}
+            key={s.num}
+            id={s.num}
             className={`scroll-mt-24 py-10 md:py-14 border-t border-sea-200/40 ${
               i % 2 === 0 ? 'bg-sand-50' : 'bg-sand-100'
             }`}
@@ -149,11 +166,8 @@ export default function Servicios() {
 
                   <div className="mt-6 flex items-baseline justify-between gap-4">
                     <div>
-                      <span className="eyebrow text-ink-mute block">Desde</span>
+                      <span className="eyebrow text-ink-mute block">Precio</span>
                       <span className="font-display text-2xl text-ink mt-1 inline-block">{s.precio}</span>
-                      {s.precio !== 'Consulta' && (
-                        <span className="text-ink-mute font-light text-sm ml-2">/ persona</span>
-                      )}
                     </div>
                     <Link
                       href="/reservar"

@@ -187,7 +187,7 @@ export default function AdminDisponibilidad() {
 
             <button
               type="submit"
-              className="inline-flex items-center justify-center bg-ink text-sand-50 px-8 py-4 text-xs font-semibold tracking-[0.22em] uppercase hover:bg-coral-600 transition-colors"
+              className="inline-flex items-center justify-center bg-ink text-sand-50 px-8 py-4 rounded-full text-xs font-semibold tracking-[0.22em] uppercase hover:bg-coral-600 transition-colors"
             >
               Añadir disponibilidad
             </button>

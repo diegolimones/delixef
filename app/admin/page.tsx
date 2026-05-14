@@ -68,9 +68,9 @@ export default function AdminDashboard() {
   });
 
   const statCards = [
-    { label: 'Total reservas', value: stats.totalReservations, accent: 'sea' },
-    { label: 'Pendientes', value: stats.pendingReservations, accent: 'coral' },
-    { label: 'Confirmadas', value: stats.confirmedReservations, accent: 'ink' },
+    { label: 'Total reservas', value: stats.totalReservations, accent: 'sea', top: 'border-t-2 border-amber-400' },
+    { label: 'Pendientes', value: stats.pendingReservations, accent: 'coral', top: 'border-t-2 border-coral-500' },
+    { label: 'Confirmadas', value: stats.confirmedReservations, accent: 'ink', top: 'border-t-2 border-sea-600' },
   ];
 
   return (
@@ -93,10 +93,10 @@ export default function AdminDashboard() {
         {/* Stats — editorial cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-sea-200/60 border border-sea-200/60 mb-12 md:mb-16">
           {statCards.map((stat, index) => (
-            <div key={index} className="bg-sand-50 p-8 md:p-10">
+            <div key={index} className={`bg-sand-50 p-8 md:p-10 ${stat.top}`}>
               <div className="flex items-baseline justify-between mb-4">
                 <span className="eyebrow text-ink-mute">{stat.label}</span>
-                <span className="font-display text-xs text-coral-500 font-light tabular-nums">
+                <span className="font-display text-xs text-ink-mute font-light tabular-nums">
                   0{index + 1}
                 </span>
               </div>
@@ -104,7 +104,12 @@ export default function AdminDashboard() {
                 {stat.value}
               </div>
               {stat.accent === 'coral' && stat.value > 0 && (
-                <div className="mt-4 eyebrow text-coral-600">— Atención requerida</div>
+                <div className="mt-4">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-coral-50 text-coral-700 text-[0.65rem] font-semibold tracking-[0.18em] uppercase">
+                    <span className="w-1.5 h-1.5 rounded-full bg-coral-500" />
+                    Atención requerida
+                  </span>
+                </div>
               )}
             </div>
           ))}
@@ -173,23 +178,23 @@ export default function AdminDashboard() {
                       </td>
                       <td className="py-5 px-2">
                         <span
-                          className={`inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.65rem] font-semibold tracking-[0.18em] uppercase ${
                             reservation.status === 'confirmada'
-                              ? 'text-sea-800'
+                              ? 'bg-sea-100 text-sea-800'
                               : reservation.status === 'pendiente'
-                                ? 'text-coral-600'
-                                : 'text-ink-mute'
+                                ? 'bg-coral-50 text-coral-700'
+                                : 'bg-ink/[0.06] text-ink-mute'
                           }`}
                         >
                           <span
                             className={`w-1.5 h-1.5 rounded-full ${
                               reservation.status === 'confirmada'
-                                ? 'bg-sea-800'
+                                ? 'bg-sea-600'
                                 : reservation.status === 'pendiente'
                                   ? 'bg-coral-500'
                                   : 'bg-ink-mute'
                             }`}
-                          ></span>
+                          />
                           {reservation.status === 'confirmada'
                             ? 'Confirmada'
                             : reservation.status === 'pendiente'

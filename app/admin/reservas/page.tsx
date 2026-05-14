@@ -24,10 +24,10 @@ const statusLabels: Record<string, string> = {
   cancelada: 'Cancelada',
 };
 
-const statusColors: Record<string, { dot: string; text: string }> = {
-  confirmada: { dot: 'bg-sea-800', text: 'text-sea-800' },
-  pendiente: { dot: 'bg-coral-500', text: 'text-coral-600' },
-  cancelada: { dot: 'bg-ink-mute', text: 'text-ink-mute' },
+const statusColors: Record<string, { dot: string; pill: string }> = {
+  confirmada: { dot: 'bg-sea-600', pill: 'bg-sea-100 text-sea-800' },
+  pendiente: { dot: 'bg-coral-500', pill: 'bg-coral-50 text-coral-700' },
+  cancelada: { dot: 'bg-ink-mute', pill: 'bg-ink/[0.06] text-ink-mute' },
 };
 
 export default function AdminReservas() {
@@ -185,9 +185,9 @@ export default function AdminReservas() {
 
                     <div className="col-span-12 md:col-span-3">
                       <span
-                        className={`inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase ${statusStyle.text}`}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.65rem] font-semibold tracking-[0.18em] uppercase ${statusStyle.pill}`}
                       >
-                        <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.dot}`}></span>
+                        <span className={`w-1.5 h-1.5 rounded-full ${statusStyle.dot}`} />
                         {statusLabels[reserva.status]}
                       </span>
                     </div>
@@ -239,7 +239,7 @@ export default function AdminReservas() {
                         {reserva.status !== 'confirmada' && (
                           <button
                             onClick={() => updateReservaStatus(reserva.id, 'confirmada')}
-                            className="inline-flex items-center justify-center bg-ink text-sand-50 px-6 py-3 text-xs font-semibold tracking-[0.2em] uppercase hover:bg-sea-900 transition-colors"
+                            className="inline-flex items-center justify-center bg-ink text-sand-50 px-6 py-3 rounded-full text-xs font-semibold tracking-[0.2em] uppercase hover:bg-sea-900 transition-colors"
                           >
                             Confirmar
                           </button>
@@ -247,7 +247,7 @@ export default function AdminReservas() {
                         {reserva.status !== 'cancelada' && (
                           <button
                             onClick={() => updateReservaStatus(reserva.id, 'cancelada')}
-                            className="inline-flex items-center justify-center px-6 py-3 text-xs font-semibold tracking-[0.2em] uppercase text-coral-600 hover:bg-coral-500/10 transition-colors border border-coral-500"
+                            className="inline-flex items-center justify-center px-6 py-3 rounded-full text-xs font-semibold tracking-[0.2em] uppercase text-coral-600 hover:bg-coral-500/10 transition-colors border border-coral-500"
                           >
                             Cancelar
                           </button>

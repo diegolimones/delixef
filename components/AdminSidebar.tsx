@@ -26,6 +26,10 @@ export default function AdminSidebar() {
     { href: '/admin/reservas', label: 'Reservas', num: '02' },
     { href: '/admin/disponibilidad', label: 'Disponibilidad', num: '03' },
     { href: '/admin/menus', label: 'Menús', num: '04' },
+    { href: '/admin/servicios', label: 'Servicios', num: '05' },
+    { href: '/admin/media', label: 'Imágenes', num: '06' },
+    { href: '/admin/testimonios', label: 'Testimonios', num: '07' },
+    { href: '/admin/prensa', label: 'Prensa', num: '08' },
   ];
 
   const isActive = (href: string) => pathname === href;
@@ -83,15 +87,15 @@ export default function AdminSidebar() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className={`group flex items-baseline gap-4 px-4 py-3 transition-colors ${
+                className={`group flex items-baseline gap-4 px-4 py-3 border-l-2 transition-all ${
                   active
-                    ? 'bg-sand-50/[0.06] text-sand-50'
-                    : 'text-sand-50/70 hover:text-sand-50 hover:bg-sand-50/[0.03]'
+                    ? 'border-amber-400 bg-sand-50/[0.06] text-sand-50'
+                    : 'border-transparent text-sand-50/70 hover:text-sand-50 hover:bg-sand-50/[0.03]'
                 }`}
               >
                 <span
                   className={`font-display text-sm font-light tabular-nums transition-colors ${
-                    active ? 'text-coral-400' : 'text-sand-50/40'
+                    active ? 'text-amber-400' : 'text-sand-50/40'
                   }`}
                 >
                   {item.num}
@@ -119,7 +123,7 @@ export default function AdminSidebar() {
           </Link>
           <button
             onClick={() => signOut({ callbackUrl: '/' })}
-            className="w-full inline-flex items-center justify-center bg-coral-500 text-sand-50 px-5 py-3 text-xs font-semibold tracking-[0.2em] uppercase hover:bg-coral-600 transition-colors"
+            className="w-full inline-flex items-center justify-center bg-coral-500 text-sand-50 px-5 py-3 rounded-full text-xs font-semibold tracking-[0.2em] uppercase hover:bg-coral-600 transition-colors"
           >
             Cerrar sesión
           </button>

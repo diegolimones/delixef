@@ -32,14 +32,14 @@ export default function Gallery({ items }: GalleryProps) {
   const filtered = active === 'Todos' ? items : items.filter((i) => i.category === active);
 
   return (
-    <section ref={ref} className="bg-sea-900 py-24 md:py-36">
+    <section ref={ref} className="bg-sea-900 pt-10 pb-14 md:pt-12 md:pb-20">
       <div className="max-w-editorial mx-auto px-6 md:px-10">
         <div className="grid grid-cols-12 gap-6 mb-12 md:mb-16">
           <div className="col-span-12 md:col-span-3">
             <span className="eyebrow text-foam-400">— Diario</span>
           </div>
           <div className="col-span-12 md:col-span-7">
-            <h2 className="font-display font-light text-display-md text-sand-50 leading-[1.04]">
+            <h2 className="font-display font-light text-2xl md:text-3xl text-sand-50 leading-tight">
               Lo que <span className="italic text-gold-300">cocinamos</span> esta temporada.
             </h2>
           </div>
@@ -89,10 +89,13 @@ export default function Gallery({ items }: GalleryProps) {
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/50 transition-all duration-300 flex items-end p-4">
-                  <span className="text-white text-sm font-medium opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                {/* Gradiente permanente + nombre siempre visible */}
+                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink/70 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 bottom-0 p-3 flex items-end justify-between">
+                  <span className="text-sand-50 text-xs font-semibold tracking-wide leading-snug drop-shadow-sm">
                     {item.label}
                   </span>
+                  <span className="eyebrow text-sand-50/60 text-[0.6rem]">{item.category}</span>
                 </div>
               </div>
             </div>

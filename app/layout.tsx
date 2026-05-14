@@ -87,7 +87,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className="font-body bg-sand-50 text-ink flex flex-col min-h-screen antialiased">
+      <body className="font-body bg-sand-50 text-ink flex flex-col min-h-screen antialiased overflow-x-hidden">
         <Analytics />
         <Header />
         <MainPadding>{children}</MainPadding>

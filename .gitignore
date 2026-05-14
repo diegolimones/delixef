@@ -48,3 +48,9 @@ yarn-error.log*
 
 # Cloned reference repo (not part of this project)
 claude-webkit/
+
+# Scripts with hardcoded secrets — run locally only
+scripts/
+
+# Local image assets
+Imagenes web/
