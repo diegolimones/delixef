@@ -3,6 +3,7 @@
 import { useAdminAuth } from '@/lib/hooks';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import AdminCalendar from '@/components/AdminCalendar';
 
 interface Reserva {
   id: string;
@@ -37,6 +38,8 @@ export default function AdminReservas() {
   const [busqueda, setBusqueda] = useState('');
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [vista, setVista] = useState<'lista' | 'calendario'>('calendario');
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -84,7 +87,8 @@ export default function AdminReservas() {
     const matchBusqueda =
       r.client_name.toLowerCase().includes(busqueda.toLowerCase()) ||
       r.client_email.toLowerCase().includes(busqueda.toLowerCase());
-    return matchFiltro && matchBusqueda;
+    const matchDay = !selectedDay || r.reservation_date.slice(0, 10) === selectedDay;
+    return matchFiltro && matchBusqueda && matchDay;
   });
 
   const getTimeSlotLabel = (slot: string) =>
@@ -108,8 +112,49 @@ export default function AdminReservas() {
           </h1>
           <p className="mt-3 text-ink-mute font-light">
             {reservasFiltradas.length} de {reservas.length} reservas
+          {selectedDay && (
+            <> · filtrando{' '}
+              <button
+                onClick={() => setSelectedDay(null)}
+                className="text-coral-600 hover:underline"
+              >
+                {new Date(selectedDay + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })} ×
+              </button>
+            </>
+          )}
           </p>
         </div>
+
+        {/* Toggle vista */}
+        <div className="mb-8 flex items-center gap-2">
+          {(['calendario', 'lista'] as const).map((v) => (
+            <button
+              key={v}
+              onClick={() => setVista(v)}
+              className={`px-5 py-2 rounded-full text-xs font-semibold tracking-[0.18em] uppercase transition-colors ${
+                vista === v
+                  ? 'bg-ink text-sand-50'
+                  : 'text-ink-mute hover:text-ink border border-sea-200'
+              }`}
+            >
+              {v === 'calendario' ? '◫ Calendario' : '≡ Lista'}
+            </button>
+          ))}
+        </div>
+
+        {/* Calendario */}
+        {vista === 'calendario' && (
+          <div className="mb-10">
+            <AdminCalendar
+              reservas={reservas}
+              onDaySelect={(day) => {
+                setSelectedDay(day);
+                if (day) setVista('lista');
+              }}
+              selectedDay={selectedDay}
+            />
+          </div>
+        )}
 
         {/* Filtros */}
         <div className="mb-12 flex flex-col md:flex-row gap-6 md:items-end">

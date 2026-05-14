@@ -1,6 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+
+interface AvailabilitySlot {
+  date: string;
+  time_slot: string;
+  available: boolean;
+}
 
 interface CalendarProps {
   onDateSelect: (date: string, timeSlot: string) => void;
@@ -11,11 +17,13 @@ interface CalendarProps {
 
 type TimeSlot = 'desayuno' | 'comida' | 'cena';
 
-const timeSlots: { id: TimeSlot; label: string; icon: string }[] = [
-  { id: 'desayuno', label: 'Desayuno (08:00 - 11:00)', icon: '☀️' },
-  { id: 'comida', label: 'Comida (13:00 - 16:00)', icon: '🌤️' },
-  { id: 'cena', label: 'Cena (20:00 - 23:00)', icon: '🌙' },
+const TIME_SLOTS: { id: TimeSlot; label: string; hours: string }[] = [
+  { id: 'desayuno', label: 'Desayuno', hours: '08:00 — 11:00' },
+  { id: 'comida', label: 'Comida', hours: '13:00 — 16:00' },
+  { id: 'cena', label: 'Cena', hours: '20:00 — 23:00' },
 ];
+
+const WEEKDAYS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
 
 export default function Calendar({
   onDateSelect,
@@ -24,171 +32,210 @@ export default function Calendar({
   minDays = 1,
 }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const daysInMonth = useMemo(() => {
-    return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-  }, [currentDate]);
+  const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
 
-  const firstDayOfMonth = useMemo(() => {
-    return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
-  }, [currentDate]);
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/disponibilidad?month=${monthKey}`)
+      .then((r) => r.json())
+      .then(({ slots }) => setAvailability(slots || []))
+      .catch(() => setAvailability([]))
+      .finally(() => setLoading(false));
+  }, [monthKey]);
 
-  const minDate = new Date();
-  minDate.setDate(minDate.getDate() + minDays);
+  const minDate = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + minDays);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, [minDays]);
+
+  const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+
+  // Week starts on Monday (ISO). getDay() returns 0=Sun, convert to 0=Mon
+  const firstDow = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+  const offset = (firstDow + 6) % 7; // Mon=0 … Sun=6
 
   const days = useMemo(() => {
-    const days = [];
-    for (let i = 0; i < firstDayOfMonth; i++) {
-      days.push(null);
-    }
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(i);
-    }
-    return days;
-  }, [daysInMonth, firstDayOfMonth]);
+    const d: (number | null)[] = [];
+    for (let i = 0; i < offset; i++) d.push(null);
+    for (let i = 1; i <= daysInMonth; i++) d.push(i);
+    return d;
+  }, [daysInMonth, offset]);
+
+  const getDateStr = (day: number) =>
+    `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
   const isDateAvailable = (day: number) => {
-    if (!day) return false;
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    return date >= minDate && date.getDay() !== 0; // Excluir domingos
+    const d = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    if (d < minDate) return false;
+    const str = getDateStr(day);
+    return availability.some((s) => s.date === str && s.available);
   };
 
-  const isDateSelected = (day: number) => {
-    if (!selectedDate || !day) return false;
-    const [year, month, dayStr] = selectedDate.split('-');
-    return (
-      parseInt(year) === currentDate.getFullYear() &&
-      parseInt(month) - 1 === currentDate.getMonth() &&
-      parseInt(dayStr) === day
-    );
-  };
+  const isDateSelected = (day: number) => !!selectedDate && selectedDate === getDateStr(day);
 
   const handleDateClick = (day: number) => {
     if (!isDateAvailable(day)) return;
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    onDateSelect(dateString, selectedTimeSlot || 'comida');
+    const dateStr = getDateStr(day);
+    // Auto-select first available slot for the date
+    const firstSlot = availability.find((s) => s.date === dateStr && s.available);
+    onDateSelect(dateStr, selectedTimeSlot || firstSlot?.time_slot || 'cena');
   };
 
-  const handlePreviousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+  const getSlotsForDate = (dateStr: string) =>
+    TIME_SLOTS.map((slot) => ({
+      ...slot,
+      isAvailable: availability.some(
+        (s) => s.date === dateStr && s.time_slot === slot.id && s.available
+      ),
+    }));
+
+  const canGoPrev = () => {
+    const prev = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    const now = new Date();
+    return prev >= new Date(now.getFullYear(), now.getMonth(), 1);
   };
 
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
-  };
-
-  const monthName = currentDate.toLocaleDateString('es-ES', {
-    month: 'long',
-    year: 'numeric',
-  });
+  const monthName = currentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 
   return (
-    <div className="space-y-6">
-      {/* Calendar */}
-      <div className="bg-sand-50 border border-sea-200/60 p-6">
-        <div className="flex items-center justify-between mb-6">
+    <div className="space-y-5">
+      {/* ── Calendario ── */}
+      <div className="bg-sand-50 border border-sea-200/60">
+        {/* Header mes */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-sea-200/60">
           <button
-            onClick={handlePreviousMonth}
-            className="p-2 hover:bg-sand-100 transition-colors text-ink"
+            onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))}
+            disabled={!canGoPrev()}
             aria-label="Mes anterior"
+            className="p-2 text-ink hover:text-coral-600 transition-colors disabled:opacity-30"
           >
             ←
           </button>
-          <h3 className="font-display text-xl text-ink capitalize">{monthName}</h3>
+          <h3 className="font-display text-lg text-ink capitalize font-light">
+            {loading ? <span className="text-ink-mute">…</span> : monthName}
+          </h3>
           <button
-            onClick={handleNextMonth}
-            className="p-2 hover:bg-sand-100 transition-colors text-ink"
-            aria-label="Próximo mes"
+            onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))}
+            aria-label="Mes siguiente"
+            className="p-2 text-ink hover:text-coral-600 transition-colors"
           >
             →
           </button>
         </div>
 
-        {/* Weekdays */}
-        <div className="grid grid-cols-7 gap-2 mb-2">
-          {['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'].map((day) => (
-            <div key={day} className="text-center text-xs font-semibold tracking-[0.2em] uppercase text-ink-mute py-2">
-              {day}
-            </div>
+        {/* Cabeceras días */}
+        <div className="grid grid-cols-7 border-b border-sea-200/40">
+          {WEEKDAYS.map((d) => (
+            <div key={d} className="py-2 text-center eyebrow text-ink-mute text-[0.6rem]">{d}</div>
           ))}
         </div>
 
-        {/* Days */}
-        <div className="grid grid-cols-7 gap-2">
-          {days.map((day, index) => {
-            const isAvailable = day ? isDateAvailable(day) : false;
-            const isSelected = day ? isDateSelected(day) : false;
+        {/* Días */}
+        <div className="grid grid-cols-7 gap-px bg-sea-200/20 p-px">
+          {days.map((day, idx) => {
+            if (!day) return <div key={`e-${idx}`} className="bg-sand-50 aspect-square" />;
+            const available = isDateAvailable(day);
+            const selected = isDateSelected(day);
+            const today = new Date();
+            const isToday =
+              day === today.getDate() &&
+              currentDate.getMonth() === today.getMonth() &&
+              currentDate.getFullYear() === today.getFullYear();
 
             return (
               <button
-                key={index}
-                onClick={() => day && handleDateClick(day)}
-                disabled={!isAvailable}
+                key={day}
+                onClick={() => handleDateClick(day)}
+                disabled={!available}
                 className={`
-                  p-3 font-medium transition-colors text-sm
-                  ${!day ? 'invisible' : ''}
-                  ${isSelected ? 'bg-coral-500 text-sand-50' : 'bg-sand-100 text-ink'}
-                  ${isAvailable && !isSelected ? 'hover:bg-coral-500/15 hover:text-coral-700 cursor-pointer' : ''}
-                  ${!isAvailable && day ? 'opacity-40 cursor-not-allowed' : ''}
+                  bg-sand-50 aspect-square flex flex-col items-center justify-center gap-0.5
+                  text-sm font-light transition-colors
+                  ${selected ? 'bg-coral-500 text-sand-50 hover:bg-coral-600' : ''}
+                  ${available && !selected ? 'hover:bg-coral-50 hover:text-coral-700 cursor-pointer' : ''}
+                  ${!available ? 'opacity-30 cursor-not-allowed' : ''}
                 `}
               >
-                {day}
+                <span className={isToday && !selected ? 'underline decoration-coral-500 decoration-2 underline-offset-2' : ''}>
+                  {day}
+                </span>
+                {available && !selected && (
+                  <span className="w-1 h-1 rounded-full bg-sea-500" />
+                )}
               </button>
             );
           })}
         </div>
+
+        {/* Leyenda */}
+        <div className="flex items-center gap-4 px-5 py-3 border-t border-sea-200/40">
+          <span className="flex items-center gap-1.5 eyebrow text-ink-mute">
+            <span className="w-2 h-2 rounded-full bg-sea-500" /> Disponible
+          </span>
+          <span className="flex items-center gap-1.5 eyebrow text-ink-mute">
+            <span className="w-2 h-2 rounded-full bg-coral-500" /> Seleccionado
+          </span>
+          <span className="eyebrow text-ink-mute opacity-40">Gris = Sin disponibilidad</span>
+        </div>
       </div>
 
-      {/* Time Slots */}
+      {/* ── Horarios ── */}
       {selectedDate && (
-        <div className="bg-sand-50 border border-sea-200/60 p-6">
-          <h4 className="font-display text-xl text-ink mb-5">Selecciona una hora</h4>
-          <div className="space-y-3">
-            {timeSlots.map((slot) => (
-              <button
-                key={slot.id}
-                onClick={() => onDateSelect(selectedDate, slot.id)}
-                className={`
-                  w-full p-4 border-2 transition-colors text-left
-                  ${
-                    selectedTimeSlot === slot.id
-                      ? 'border-coral-500 bg-coral-500/10'
-                      : 'border-sea-200 hover:border-coral-500/50'
-                  }
-                `}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{slot.icon}</span>
-                  <div>
-                    <div className={`font-semibold ${
-                      selectedTimeSlot === slot.id ? 'text-coral-700' : 'text-ink'
-                    }`}>{slot.label}</div>
+        <div className="bg-sand-50 border border-sea-200/60 p-5">
+          <h4 className="font-display text-lg text-ink font-light mb-4">
+            Horario para{' '}
+            <span className="italic text-sea-600">
+              {new Date(selectedDate + 'T12:00:00').toLocaleDateString('es-ES', {
+                weekday: 'long', day: 'numeric', month: 'long',
+              })}
+            </span>
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {getSlotsForDate(selectedDate).map((slot) => {
+              const isActive = selectedTimeSlot === slot.id;
+              return (
+                <button
+                  key={slot.id}
+                  onClick={() => slot.isAvailable && onDateSelect(selectedDate, slot.id)}
+                  disabled={!slot.isAvailable}
+                  className={`
+                    p-4 border-2 text-left transition-colors
+                    ${isActive ? 'border-coral-500 bg-coral-500/10' : ''}
+                    ${slot.isAvailable && !isActive ? 'border-sea-200 hover:border-coral-400' : ''}
+                    ${!slot.isAvailable ? 'border-sea-200/40 opacity-40 cursor-not-allowed' : ''}
+                  `}
+                >
+                  <div className={`font-display text-lg font-light ${isActive ? 'text-coral-700 italic' : 'text-ink'}`}>
+                    {slot.label}
                   </div>
-                  {selectedTimeSlot === slot.id && (
-                    <span className="ml-auto text-coral-600 font-bold">✓</span>
+                  <div className="eyebrow text-ink-mute mt-1">{slot.hours}</div>
+                  {!slot.isAvailable && (
+                    <div className="eyebrow text-coral-400 mt-1">Completo</div>
                   )}
-                </div>
-              </button>
-            ))}
+                  {isActive && (
+                    <div className="eyebrow text-coral-600 mt-1">Seleccionado</div>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
 
-      {/* Selection Summary */}
+      {/* ── Resumen selección ── */}
       {selectedDate && selectedTimeSlot && (
-        <div className="bg-coral-500/10 border border-coral-500/40 p-4">
-          <p className="text-sm text-coral-700">
-            <strong className="text-coral-700">Fecha y hora seleccionadas:</strong>
-            {' '}
-            {new Date(selectedDate).toLocaleDateString('es-ES', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-            {' '}
-            - {timeSlots.find((s) => s.id === selectedTimeSlot)?.label}
+        <div className="bg-sea-50 border border-sea-200 px-5 py-4">
+          <p className="text-sm text-sea-800 font-light">
+            <span className="font-semibold">Seleccionado:</span>{' '}
+            {new Date(selectedDate + 'T12:00:00').toLocaleDateString('es-ES', {
+              weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+            })}{' '}
+            · {TIME_SLOTS.find((s) => s.id === selectedTimeSlot)?.label}{' '}
+            ({TIME_SLOTS.find((s) => s.id === selectedTimeSlot)?.hours})
           </p>
         </div>
       )}
