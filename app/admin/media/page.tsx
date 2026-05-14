@@ -9,7 +9,7 @@ type Section = 'chef' | 'galeria' | 'servicios';
 
 interface MediaFile { name: string; url: string; path: string; }
 interface Servicio { id: string; num: string; name: string; image: string; }
-interface GaleriaItem { id: string; src: string; label: string; category: string; visible: boolean; }
+interface GaleriaItem { id: string; src: string; label: string; category: string; visible: boolean; orden: number; }
 
 const SECTIONS = [
   { id: 'chef' as Section,      label: 'Chef',      num: '01', folder: 'chef',      multiple: false },
