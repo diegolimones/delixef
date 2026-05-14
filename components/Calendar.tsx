@@ -72,8 +72,10 @@ export default function Calendar({
   const isDateAvailable = (day: number) => {
     const d = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     if (d < minDate) return false;
-    const str = getDateStr(day);
-    return availability.some((s) => s.date === str && s.available);
+    // Disponible por defecto — solo bloqueado si TODOS los slots están explícitamente bloqueados
+    const dateStr = getDateStr(day);
+    const blockedForDate = availability.filter((s) => s.date === dateStr && !s.available);
+    return blockedForDate.length < TIME_SLOTS.length;
   };
 
   const isDateSelected = (day: number) => !!selectedDate && selectedDate === getDateStr(day);
@@ -87,12 +89,11 @@ export default function Calendar({
   };
 
   const getSlotsForDate = (dateStr: string) =>
-    TIME_SLOTS.map((slot) => ({
-      ...slot,
-      isAvailable: availability.some(
-        (s) => s.date === dateStr && s.time_slot === slot.id && s.available
-      ),
-    }));
+    TIME_SLOTS.map((slot) => {
+      const entry = availability.find((s) => s.date === dateStr && s.time_slot === slot.id);
+      // Disponible si no hay entrada explícita O la entrada dice que está disponible
+      return { ...slot, isAvailable: !entry || entry.available };
+    });
 
   const canGoPrev = () => {
     const prev = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
@@ -163,9 +164,6 @@ export default function Calendar({
                 <span className={isToday && !selected ? 'underline decoration-coral-500 decoration-2 underline-offset-2' : ''}>
                   {day}
                 </span>
-                {available && !selected && (
-                  <span className="w-1 h-1 rounded-full bg-sea-500" />
-                )}
               </button>
             );
           })}
@@ -174,12 +172,9 @@ export default function Calendar({
         {/* Leyenda */}
         <div className="flex items-center gap-4 px-5 py-3 border-t border-sea-200/40">
           <span className="flex items-center gap-1.5 eyebrow text-ink-mute">
-            <span className="w-2 h-2 rounded-full bg-sea-500" /> Disponible
-          </span>
-          <span className="flex items-center gap-1.5 eyebrow text-ink-mute">
             <span className="w-2 h-2 rounded-full bg-coral-500" /> Seleccionado
           </span>
-          <span className="eyebrow text-ink-mute opacity-40">Gris = Sin disponibilidad</span>
+          <span className="eyebrow text-ink-mute opacity-50">Días pasados no disponibles</span>
         </div>
       </div>
 

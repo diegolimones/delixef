@@ -153,33 +153,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Comprobar disponibilidad real
+    // Comprobar disponibilidad: slot bloqueado explícitamente o lleno
     const { data: dispSlot } = await supabaseServer
       .from('disponibilidad')
       .select('id, max_reservas, available')
       .eq('date', reservation_date)
       .eq('time_slot', time_slot)
-      .single();
+      .maybeSingle();
 
-    if (!dispSlot || !dispSlot.available) {
+    if (dispSlot && !dispSlot.available) {
       return NextResponse.json(
         { error: 'Esta fecha y horario no están disponibles para reserva.' },
         { status: 409 }
       );
     }
 
-    const { count: existingCount } = await supabaseServer
-      .from('reservas')
-      .select('id', { count: 'exact', head: true })
-      .eq('reservation_date', reservation_date)
-      .eq('time_slot', time_slot)
-      .neq('status', 'cancelada');
+    if (dispSlot && dispSlot.max_reservas) {
+      const { count: existingCount } = await supabaseServer
+        .from('reservas')
+        .select('id', { count: 'exact', head: true })
+        .eq('reservation_date', reservation_date)
+        .eq('time_slot', time_slot)
+        .neq('status', 'cancelada');
 
-    if ((existingCount ?? 0) >= dispSlot.max_reservas) {
-      return NextResponse.json(
-        { error: 'Este horario ya está completo. Por favor elige otra fecha u hora.' },
-        { status: 409 }
-      );
+      if ((existingCount ?? 0) >= dispSlot.max_reservas) {
+        return NextResponse.json(
+          { error: 'Este horario ya está completo. Por favor elige otra fecha u hora.' },
+          { status: 409 }
+        );
+      }
     }
 
     // Generate confirmation token
