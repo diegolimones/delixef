@@ -10,9 +10,9 @@ export default function AdminLayout({
 }) {
   return (
     <SessionProvider>
-      <div className="flex min-h-screen bg-sand-50">
+      <div className="flex h-screen overflow-hidden bg-sand-50">
         <AdminSidebar />
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 overflow-y-auto">
           {children}
         </main>
       </div>
